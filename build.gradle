@@ -1,8 +1,8 @@
-buildscript {
+/*buildscript {
     ext {
         queryDslVersion = "5.0.0"
     }
-} //all buildscript {} blocks must appear before any plugins {} blocks in the script
+}*/ //all buildscript {} blocks must appear before any plugins {} blocks in the script
 
 
 plugins {
@@ -45,8 +45,10 @@ dependencies {
 
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
 
+    implementation 'org.modelmapper:modelmapper:3.1.0'
 
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+    //${queryDslVersion}
+    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
 
     annotationProcessor(
 
@@ -54,7 +56,8 @@ dependencies {
 
             "jakarta.annotation:jakarta.annotation-api",
 
-            "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta")
+            //${queryDslVersion}
+            "com.querydsl:querydsl-apt:5.0.0:jakarta")
     }
 
 tasks.named('test') {
