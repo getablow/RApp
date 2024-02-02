@@ -1,6 +1,7 @@
 package org.zerock.b01.domain;
 
 
+import com.querydsl.core.annotations.QueryEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
