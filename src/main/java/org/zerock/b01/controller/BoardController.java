@@ -51,8 +51,16 @@ public class BoardController {
 
         Long bno = boardService.register(boardDTO);
 
-        redirectAttributes.addFlashAttribute("result", bno);
+        redirectAttributes.addFlashAttribute("result", bno); //one time data transfer
 
         return "redirect:/board/list";
+    }
+
+    @GetMapping("/read")
+    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model){
+
+        BoardDTO boardDTO = boardService.readOne(bno);
+        log.info(boardDTO);
+        model.addAttribute("dto", boardDTO);
     }
 }
