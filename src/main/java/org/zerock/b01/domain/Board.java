@@ -1,9 +1,8 @@
 package org.zerock.b01.domain;
 
-
-import com.querydsl.core.annotations.QueryEntity;
-import jakarta.persistence.*;
 import lombok.*;
+
+import jakarta.persistence.*;
 
 @Entity
 @Getter
@@ -11,13 +10,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Board extends BaseEntity {
-
+public class Board extends BaseEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //key generate strategy
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bno;
 
-    @Column(length = 500, nullable = false) //setting length of column and null
+    @Column(length = 500, nullable = false) //컬럼의 길이와 null허용여부
     private String title;
 
     @Column(length = 2000, nullable = false)
@@ -30,4 +28,6 @@ public class Board extends BaseEntity {
         this.title = title;
         this.content = content;
     }
+
+
 }

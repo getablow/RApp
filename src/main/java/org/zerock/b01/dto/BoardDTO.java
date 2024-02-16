@@ -1,12 +1,12 @@
 package org.zerock.b01.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Data
@@ -28,5 +28,6 @@ public class BoardDTO {
     private String writer;
 
     private LocalDateTime regDate;
+
     private LocalDateTime modDate;
 }

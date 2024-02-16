@@ -8,26 +8,29 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
-@OpenAPIDefinition(info = @Info(title = "Zerock App",version = "v1"))
-@RequiredArgsConstructor
+
+
 @Configuration
 public class SwaggerConfig {
 
     @Bean
-    public GroupedOpenApi chatOpenApi() {
-        String[] paths = {"/**"};
+    public GroupedOpenApi restApi(){ //rest controller
 
         return GroupedOpenApi.builder()
-                .group("Zerock OPEN API v1")
-                .pathsToMatch(paths)
+                .pathsToMatch("/api/**")
+                .group("REST API")
+                .build();
+    }
+    @Bean
+    public GroupedOpenApi commonApi() { //general controller
+
+        return GroupedOpenApi.builder()
+                .pathsToMatch("/**/*")
+                .pathsToExclude("/api/**/*") //exclude that begin with '/api'
+                .group("COMMON API")
                 .build();
     }
 
-    /*@Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/springfox-swagger-ui/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
-    }*/
 
 
 }

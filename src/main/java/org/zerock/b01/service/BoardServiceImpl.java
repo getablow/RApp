@@ -1,7 +1,5 @@
 package org.zerock.b01.service;
 
-
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -10,19 +8,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.b01.domain.Board;
 import org.zerock.b01.dto.BoardDTO;
+import org.zerock.b01.dto.BoardListReplyCountDTO;
 import org.zerock.b01.dto.PageRequestDTO;
 import org.zerock.b01.dto.PageResponseDTO;
 import org.zerock.b01.repository.BoardRepository;
 
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 @Log4j2
 @RequiredArgsConstructor
 @Transactional
-public class BoardServiceImpl implements BoardService {
+public class BoardServiceImpl implements BoardService{
 
     private final ModelMapper modelMapper;
 
@@ -51,7 +52,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public void modify(BoardDTO boardDTO){
+    public void modify(BoardDTO boardDTO) {
 
         Optional<Board> result = boardRepository.findById(boardDTO.getBno());
 
@@ -64,12 +65,15 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public void remove(Long bno){
+    public void remove(Long bno) {
+
         boardRepository.deleteById(bno);
+
     }
 
+
     @Override
-    public PageResponseDTO<BoardDTO> list(PageRequestDTO pageRequestDTO){
+    public PageResponseDTO<BoardDTO> list(PageRequestDTO pageRequestDTO) {
 
         String[] types = pageRequestDTO.getTypes();
         String keyword = pageRequestDTO.getKeyword();
@@ -77,12 +81,33 @@ public class BoardServiceImpl implements BoardService {
 
         Page<Board> result = boardRepository.searchAll(types, keyword, pageable);
 
-        List<BoardDTO> dtoList = result.getContent().stream().map(board -> modelMapper.map(board, BoardDTO.class)).collect(Collectors.toList());
+        List<BoardDTO> dtoList = result.getContent().stream()
+                .map(board -> modelMapper.map(board,BoardDTO.class)).collect(Collectors.toList());
+
 
         return PageResponseDTO.<BoardDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
                 .dtoList(dtoList)
                 .total((int)result.getTotalElements())
                 .build();
+
     }
+
+    //댓글 개수까지 불러오는 list 메소드이다
+    @Override
+    public PageResponseDTO<BoardListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO) {
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        Pageable pageable = pageRequestDTO.getPageable("bno");
+
+        Page<BoardListReplyCountDTO> result = boardRepository.searchWithReplyCount(types, keyword, pageable);
+
+        return PageResponseDTO.<BoardListReplyCountDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+
 }
