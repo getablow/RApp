@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dis/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script src="/js/reply.js"></script>
 </div>
@@ -85,6 +85,8 @@
 
 <script layout:fragment="script" th:inline="javascript">
 
+    const bno = [[${dto.bno}]]
 
+    get1(bno).then(data => {console.log(data)}).catch(e => {console.error(e)})
 
 </script>

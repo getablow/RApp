@@ -16,5 +16,5 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
 //    Page<Reply> listOfBoard(Long bno, Pageable pageable);
 
     @Query("select r from Reply r where r.board.bno = :bno")
-    Page<Reply> listOfBoard(@Param("bno")Long bno, Pageable pageable); //Param 안붙이니깐 오류남
+    Page<Reply> listOfBoard(@Param("bno")Long bno, Pageable pageable); //Param 안붙이니깐 오류남 jdk 버전문제...?
 }
