@@ -19,7 +19,7 @@ public class ReplyServiceTests {
     @Autowired
     private ReplyService replyService;
 
-    private ReplyRepository replyRepository;
+
 
     @Test
     public void testRegister() {
@@ -33,13 +33,5 @@ public class ReplyServiceTests {
         log.info(replyService.register(replyDTO));
     }
 
-    @Test
-    public void testModify(){
-
-
-
-
-
-    }
 
 }
