@@ -27,3 +27,17 @@ async function addReply(replyObj){
     return response.data
 }
 
+async function getReply(rno){
+    const response = await axios.get(`/api/replies/${rno}`)
+    return response.data
+}
+
+async function modifyReply(replyObj){
+    const response = await axios.put(`/api/replies/${replyObj.rno}`, replyObj)
+    return response.data
+}
+
+async function removeReply(rno){
+    const response = await axios.delete(`/api/replies/${rno}`)
+    return response.data
+}
