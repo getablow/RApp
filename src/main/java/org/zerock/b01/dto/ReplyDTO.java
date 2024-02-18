@@ -30,10 +30,11 @@ public class ReplyDTO {
     @NotEmpty
     private String replier;
 
-    //@JsonFormat(shape = JsonFormat.Shape.STRING ,pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Aisa/Seoul")
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Aisa/Seoul")
     private LocalDateTime regDate;
 
-    //@JsonIgnore
+    @JsonIgnore //화면단에서 수정시간 필요없다
     private LocalDateTime modDate;
 }
