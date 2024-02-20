@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -30,4 +31,7 @@ public class BoardDTO {
     private LocalDateTime regDate;
 
     private LocalDateTime modDate;
+
+    //files name
+    private List<String> fileNames;
 }
