@@ -34,14 +34,17 @@ public class Board extends BaseEntity{
         this.content = content;
     }
 
-    @OneToMany(mappedBy = "board", //boardImage의 board변수
-                cascade = {CascadeType.ALL},
+    @OneToMany(mappedBy = "board", //boardImage의 board변수. 매핑테이블 생성하지않기위해 지정.
+                cascade = {CascadeType.ALL}, //영속성 전이 - All: 상위의 엔티티의 상태변경이 하위에도 적용
                 fetch = FetchType.LAZY,
-                orphanRemoval = true)
+                orphanRemoval = true) //하위 엔티티의 참조가 없는 상태가되면 데이터 아예삭제되게함 true
     @Builder.Default
     @BatchSize(size = 20) //N+1 해결방법, 하나하나 조회하는 것보다
     private Set<BoardImage> imageSet = new HashSet<>();
 
+
+
+    //jpaRepository 따로 생성하지 않고 하위엔티티 객체들을 관리하는 addImage와 clearImages 메소드
     public void addImage(String uuid, String fileName){
 
         BoardImage boardImage = BoardImage.builder()
@@ -53,12 +56,11 @@ public class Board extends BaseEntity{
         imageSet.add(boardImage);
     }
 
-    public void clearImages(){
+    public void clearImages() {
 
         imageSet.forEach(boardImage -> boardImage.changeBoard(null));
 
         this.imageSet.clear();
-
     }
 
 }

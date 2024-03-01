@@ -189,7 +189,7 @@ public class BoardRepositoryTests {
     }
 
     @Test
-    @Transactional
+    //@Transactional
     public void testReadWithImages(){
 
         Optional<Board> result = boardRepository.findByIdWithImages(1L);
@@ -233,7 +233,7 @@ public class BoardRepositoryTests {
 
     }
 
-    /*@Test
+    @Test
     public void testInsertAll(){
         for(int i=1; i <= 100; i++){
             Board board = Board.builder()
@@ -248,7 +248,7 @@ public class BoardRepositoryTests {
             }
             boardRepository.save(board);
         }
-    }*/
+    }
 
 
     @Transactional

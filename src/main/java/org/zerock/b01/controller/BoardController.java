@@ -55,7 +55,7 @@ public class BoardController {
 
         log.info(boardDTO);
 
-        Long bno  = boardService.register(boardDTO);
+        Long bno = boardService.register(boardDTO);
 
         redirectAttributes.addFlashAttribute("result", bno);
 

@@ -34,4 +34,5 @@ public class BoardDTO {
 
     //files name
     private List<String> fileNames;
+    //Board에서 Set<BoardImages>타입으로 변환되어야만합니다
 }
