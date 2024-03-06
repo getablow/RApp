@@ -11,8 +11,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -22,32 +24,48 @@ import org.zerock.b01.security.CustomUserDetailsService;
 //import org.zerock.b01.security.handler.Custom403Handler;
 //import org.zerock.b01.security.handler.CustomSocialLoginSuccessHandler;
 
+import javax.sql.DataSource;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Log4j2
 @Configuration
 @RequiredArgsConstructor
-//@EnableMethodSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class CustomSecurityConfig {
+
+    private final DataSource dataSource;
+    private final CustomUserDetailsService userDetailsService;
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         log.info("-----------configure-------------");
-        http
-                .formLogin(withDefaults());
-//        http
-//                .formLogin(form -> { //로그인 화면에서 로그인 진행하는 설정......?
-//
-//            form.loginPage(withDefaults());
-//
-//        });
+        /*http.formLogin(withDefaults()); //됨*/
+        http.formLogin(form -> {
+            form.loginPage("/member/login");
+        });
+
+        http.csrf(AbstractHttpConfigurer::disable);
+
+        http.rememberMe(httpSecurityRememberMeConfigurer -> {
+
+            httpSecurityRememberMeConfigurer.key("12345678")
+                    .tokenRepository(persistentTokenRepository())
+                    .userDetailsService(userDetailsService)
+                    .tokenValiditySeconds(60*60*24*30);
+
+        });
 
 
         return http.build();
 
-        //return null;
     }
 
     @Bean
@@ -59,6 +77,13 @@ public class CustomSecurityConfig {
 
     }
 
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository(){
+        JdbcTokenRepositoryImpl repo = new JdbcTokenRepositoryImpl();
+        repo.setDataSource(dataSource);
+        return repo;
+    }
 
 
 }
