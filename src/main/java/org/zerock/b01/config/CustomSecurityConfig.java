@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.zerock.b01.security.CustomUserDetailsService;
+import org.zerock.b01.security.handler.Custom403Handler;
 //import org.zerock.b01.security.handler.Custom403Handler;
 //import org.zerock.b01.security.handler.CustomSocialLoginSuccessHandler;
 
@@ -63,10 +64,21 @@ public class CustomSecurityConfig {
 
         });
 
+        http.exceptionHandling(httpSecurityExceptionHandlingConfigurer -> {
+
+            httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(accessDeniedHandler());
+
+        });
 
         return http.build();
 
     }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler(){
+        return new Custom403Handler();
+    }
+
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
