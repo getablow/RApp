@@ -57,4 +57,13 @@ public class MemberRepositoryTests {
         member.getRoleSet().forEach(memberRole -> log.info(memberRole.name()));
 
     }
+
+
+    @Test
+    public void testUpdate() {
+        String mid = "thegreathnb@kakao.com";
+        String mpw = passwordEncoder.encode("54321");
+
+        memberRepository.updatePassword(mpw, mid);
+    }
 }

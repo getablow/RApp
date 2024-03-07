@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.rememberme.JdbcTokenRepos
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.zerock.b01.security.CustomUserDetailsService;
 import org.zerock.b01.security.handler.Custom403Handler;
+import org.zerock.b01.security.handler.CustomSocialLoginSuccessHandler;
 //import org.zerock.b01.security.handler.Custom403Handler;
 //import org.zerock.b01.security.handler.CustomSocialLoginSuccessHandler;
 
@@ -70,6 +71,11 @@ public class CustomSecurityConfig {
 
         });
 
+        http.oauth2Login( httpSecurityOAuth2LoginConfigurer -> {
+            httpSecurityOAuth2LoginConfigurer.loginPage("/member/login");
+            httpSecurityOAuth2LoginConfigurer.successHandler(authenticationSuccessHandler());
+        });
+
         return http.build();
 
     }
@@ -97,5 +103,10 @@ public class CustomSecurityConfig {
         return repo;
     }
 
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new CustomSocialLoginSuccessHandler(passwordEncoder());
+    }
 
 }
