@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
     <meta charset="utf-8" />
@@ -14,16 +15,19 @@
 </head>
 <body class="align-middle" >
 <div class="container-fluid d-flex justify-content-center" style="height: 100vh">
-
     <div class="card align-self-center">
         <div class="card-header">
-            LOGIN Page
+            LOGIN
         </div>
         <div class="card-body">
             <th:block th:if="${param.logout != null}">
                 <h1>Logout........</h1>
             </th:block>
-
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">
+                    사용자ID 또는 비밀번호를 확인해 주세요.
+                </div>
+            </div>
             <form id="registerForm" action="/member/login" method="post" th:if="${param.logout == null}">
                 <div class="input-group mb-3">
                     <span class="input-group-text">아이디</span>
@@ -44,10 +48,16 @@
                         <button type="submit" class="btn btn-primary submitBtn">LOGIN</button>
                     </div>
                 </div>
+                <div class="bottom">
+                    <a href="/oauth2/authorization/kakao">KAKAO</a>
+                    <a href="/member/join">JOIN</a>
+                </div>
+
             </form>
-            <a href="/oauth2/authorization/kakao">KAKAO</a>
+
         </div><!--end card body-->
     </div><!--end card-->
 </div>
 </body>
 </html>
+
