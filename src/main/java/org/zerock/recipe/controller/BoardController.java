@@ -32,6 +32,17 @@ public class BoardController {
 
     private final BoardService boardService;
 
+    @GetMapping("/main")
+    public void testpage(PageRequestDTO pageRequestDTO, Model model) {
+
+        PageResponseDTO<BoardListAllDTO> responseDTO = boardService.listWithAll(pageRequestDTO);
+
+        log.info(responseDTO);
+
+        model.addAttribute("responseDTO", responseDTO);
+
+    }
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){

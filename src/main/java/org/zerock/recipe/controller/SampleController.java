@@ -7,6 +7,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.zerock.recipe.dto.BoardListAllDTO;
+import org.zerock.recipe.dto.PageRequestDTO;
+import org.zerock.recipe.dto.PageResponseDTO;
+import org.zerock.recipe.service.BoardService;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,6 +22,11 @@ import java.util.stream.IntStream;
 @Controller
 @Log4j2
 public class SampleController {
+
+
+
+
+
 
     @Operation(summary = "hello")
     @GetMapping("/hello")
