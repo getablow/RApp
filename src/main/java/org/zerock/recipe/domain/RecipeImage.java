@@ -1,18 +1,18 @@
 package org.zerock.recipe.domain;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
+
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "board")
-public class BoardImage implements Comparable<BoardImage>{
+@ToString(exclude = "recipe")
+public class RecipeImage implements Comparable<RecipeImage>{
 
     @Id
     private String uuid;
@@ -22,15 +22,14 @@ public class BoardImage implements Comparable<BoardImage>{
     private int ord;
 
     @ManyToOne
-    private Board board;
+    private Recipe recipe;
 
     @Override
-    public int compareTo(BoardImage other){
+    public int compareTo(RecipeImage other){
         return this.ord - other.ord;
     }
 
-    public void changeBoard(Board board){
-        this.board = board;
+    public void changeRecipe(Recipe recipe){
+        this.recipe = recipe;
     }
-
 }

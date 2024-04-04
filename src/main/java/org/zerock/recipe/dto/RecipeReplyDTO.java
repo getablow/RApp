@@ -1,8 +1,6 @@
 package org.zerock.recipe.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,18 +8,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReplyDTO {
+public class RecipeReplyDTO {
 
     private Long rno;
 
     @NotNull
-    private Long bno;
+    private Long rid;
 
     @NotEmpty
     private String replyText;
@@ -29,11 +27,7 @@ public class ReplyDTO {
     @NotEmpty
     private String replier;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private LocalDate regDate, modDate;
 
-    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Aisa/Seoul")
-    private LocalDateTime regDate;
-
-    @JsonIgnore //화면단에서 수정시간 필요없다
-    private LocalDateTime modDate;
 }

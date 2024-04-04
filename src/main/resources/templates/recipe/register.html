@@ -12,19 +12,42 @@
     <div class="col">
       <div class="card">
         <div class="card-header">
-          Board Register
+          Recipe Register
         </div>
         <div class="card-body">
-          <form action="/board/register" method="post">
+          <form action="/recipe/register" method="post">
             <div class="input-group mb-3">
-              <span class="input-group-text">Title</span>
-              <input type="text" name="title" class="form-control" placeholder="Title">
+              <span class="input-group-text">Recipe Name</span>
+              <input type="text" name="title" class="form-control" placeholder="Name">
             </div>
 
             <div class="input-group mb-3">
-              <span class="input-group-text">Content</span>
+              <span class="input-group-text">Recipe Description</span>
               <textarea class="form-control col-sm-5" rows="5" name="content"></textarea>
             </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">videoUrl</span>
+              <input type="text" name="videoUrl" class="form-control" placeholder="url">
+            </div>
+
+            <div class="input-group mb-3">
+              <span class="input-group-text">Ingredients&amount</span>
+              <ul id="materialList" style="list-style:none">
+                <li id="liMaterial_1">
+                  <div class="input-group">
+                    <input type="text" name="name" class="form-control" placeholder="재료">
+                    <input type="text" name="amount" class="form-control" placeholder="양">
+                    <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
+                  </div>
+                </li>
+              </ul>
+              <div>
+                <button type="button" onclick="addItem()" class="btn btn-secondary">ADD Ingredient</button>
+              </div>
+
+            </div>
+
 
             <div class="input-group mb-3" th:with="username=${#authentication.principal.username}">
               <span class="input-group-text">Writer</span>
@@ -40,6 +63,7 @@
 
             <div class="my-4">
               <div class="float-end">
+                <button type="button" class="btn btn-primary listBtn">List</button>
                 <button type="submit" class="btn btn-primary submitBtn">Submit</button>
                 <button type="reset" class="btn btn-secondary">Reset</button>
               </div>
@@ -106,6 +130,10 @@
     alert(errorMsg)
   }
 
+
+
+
+
   //upload modal
   const uploadModal = new bootstrap.Modal(document.querySelector(".uploadModal"))
 
@@ -117,7 +145,15 @@
 
   }, false)
 
+  document.querySelector(".listBtn").addEventListener("click", function(e){
 
+    e.preventDefault()
+    e.stopPropagation()
+
+    self.location =`/recipe/list`
+
+
+  }, false)
 
 
   document.querySelector(".uploadBtn").addEventListener("click", function (e) {
@@ -143,6 +179,22 @@
       }).catch(e => {
         uploadModal.hide()
       })
+
+    const ingredients = [];
+
+    document.querySelectorAll('#materialList li').forEach(item => {
+      const name = item.querySelector('input[name="name"]').value;
+      const amount = item.querySelector('input[name="amount"]').value;
+      const ingredient = {
+        name: name,
+        amount: amount
+      };
+      ingredients.push(ingredient);
+    });
+
+
+
+
 
   }, false)
 
@@ -193,7 +245,6 @@
     for (let i = 0; i < uploadFiles.length ; i++) {
       const uploadFile = uploadFiles[i]
       const imgLink = uploadFile.getAttribute("data-src")
-
       str += `<input type='hidden' name='fileNames' value="${imgLink}">`
       console.log(str)
     }
@@ -207,5 +258,31 @@
 
   }, false)
 
+
+  function addItem() {
+    var maxcount = 20;
+    var list = document.getElementById("materialList");
+    var itemCount = list.childElementCount;
+    var newItem = document.createElement("li");
+    newItem.id = "liMaterial_" + (itemCount + 1)
+
+    if(errors){
+      var newItem = document.createElement("li");
+      newItem.id = "liMaterial_1";
+    }else if(itemCount < maxcount){
+      newItem.innerHTML = `<div class="input-group">
+                                        <input type="text" name="name" aria-label="First name" class="form-control" placeholder="재료">
+                                        <input type="text" name="amount" aria-label="Last name" class="form-control" placeholder="양">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
+                              </div>`;
+    }
+
+    list.appendChild(newItem);
+  }
+
+  function delItem(element) {
+    var parent = element.parentNode.parentNode;
+    parent.remove();
+  }
 
 </script>

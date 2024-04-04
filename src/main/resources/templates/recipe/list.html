@@ -2,11 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/basic.html}">
+<head>
+
+    <style>
+        .container {
+            display: block;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .item {
+            list-style:none;
+            float: left;
+            width: 20%;
+            padding: 10px;
+            justify-content: space-evenly;
+        }
+
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+
+</head>
 
 <div layout:fragment="content">
 
     <div class="row mt-3">
-        <form action="/board/list" method="get">
+        <form action="/recipe/list" method="get">
             <div class="col">
                 <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
                 <div class="input-group">
@@ -36,40 +61,34 @@
 
             <div class="card">
                 <div class="card-header">
-                    Board List
+                    Recipe List
                 </div>
-                <div class="card-body" >
-                    <h5 class="card-title">Board List </h5>
+                <div class="card-body container" >
 
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th scope="col">Bno</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Writer</th>
-                            <th scope="col">RegDate</th>
-                        </tr>
-                        </thead>
+                        <ul class="container clearfix" th:with="link = ${pageRequestDTO.getLink()}">
+                            <li class="item" th:each="dto : ${responseDTO.dtoList}">
+                                <div th:if="${dto.recipeImages != null && dto.recipeImages.size() > 0}" style="position: relative; border-radius: 4px; overflow: hidden; padding: 10px 2px;">
+                                    <a th:href="|@{/recipe/read(rid=${dto.rid})}&${link}|">
 
-                        <tbody th:with="link = ${pageRequestDTO.getLink()}">
-
-                        <tr th:each="dto:${responseDTO.dtoList}"  >
-                            <th scope="row">[[${dto.bno}]]</th>
-                            <td>
-                                <a th:href="|@{/board/read(bno =${dto.bno})}&${link}|" class="text-decoration-none"> [[${dto.title}]] </a>
-                                <span class="badge progress-bar-success" style="background-color:#0a53be">[[${dto.replyCount}]]</span>
-                                <div th:if="${dto.boardImages != null && dto.boardImages.size() > 0}">
-                                    <img style="width:100px" th:each="boardImage: ${dto.boardImages}" th:src="|/view/s_${boardImage.uuid}_${boardImage.fileName}|">
+                                        <img width="200" height="200" th:src="|/view/s_${dto.recipeImages[0].uuid}_${dto.recipeImages[0].fileName}|" onerror="this.src='/images/noimage.jpeg'">
+                                    </a>
                                 </div>
-                            </td>
-                            <td>[[${dto.writer}]]</td>
-                            <td>[[${#temporals.format(dto.regDate, 'yyyy-MM-dd')}]]</td>
-                        </tr>
+                                <div th:unless="${dto.recipeImages != null && dto.recipeImages.size() > 0}" style="position: relative; border-radius: 4px; overflow: hidden; padding: 10px 2px;">
+                                    <a th:href="|@{/recipe/read(rid=${dto.rid})}&${link}|">
+                                        <img width="200" height="200" th:src="@{/images/noimage.jpeg}">
+                                    </a>
+                                </div>
+                                <div>
+                                    <div><span>[[${dto.title}]]</span></div>
+                                    <div><span>[[${dto.writer}]]</span></div>
+                                </div>
+                            </li>
+                        </ul>
 
 
-                        </tbody>
-                    </table>
-
+                    <div class="float-start">
+                        <button type="button" class="btn btn-primary regBtn">레시피등록</button>
+                    </div>
                     <div class="float-end">
                         <ul class="pagination flex-wrap">
 
@@ -143,7 +162,7 @@
         e.preventDefault()
         e.stopPropagation()
 
-        self.location ='/board/list'
+        self.location ='/recipe/main'
 
     },false)
 
@@ -156,6 +175,16 @@
         modal.show()
     }
 
+
+    document.querySelector(".regBtn").addEventListener("click", function(e){
+
+        e.preventDefault()
+        e.stopPropagation()
+
+        self.location =`/recipe/register`
+
+
+    }, false)
 
 
 </script>

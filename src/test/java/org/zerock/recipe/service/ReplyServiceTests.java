@@ -4,7 +4,7 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.zerock.recipe.dto.ReplyDTO;
+import org.zerock.recipe.dto.RecipeReplyDTO;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -13,17 +13,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ReplyServiceTests {
 
     @Autowired
-    private ReplyService replyService;
+    private RecipeReplyService replyService;
 
 
 
     @Test
     public void testRegister() {
 
-        ReplyDTO replyDTO = ReplyDTO.builder()
+        RecipeReplyDTO replyDTO = RecipeReplyDTO.builder()
                 .replyText("replyService Test...")
                 .replier("user0")
-                .bno(100L)
+                .rid(100L)
                 .build();
 
         log.info(replyService.register(replyDTO));

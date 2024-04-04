@@ -46,7 +46,7 @@ public class CustomSecurityConfig {
         /*http.formLogin(withDefaults()); 됨*/
         http.formLogin(form -> {
             form.loginPage("/member/login");
-            form.defaultSuccessUrl("/board/list");
+            form.defaultSuccessUrl("/recipe/list");
         });
 
 
@@ -78,9 +78,13 @@ public class CustomSecurityConfig {
             httpSecurityOAuth2LoginConfigurer.successHandler(authenticationSuccessHandler());
         });
 
+
+
         return http.build();
 
     }
+
+
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler(){

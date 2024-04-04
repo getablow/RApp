@@ -1,17 +1,18 @@
 package org.zerock.recipe.dto;
 
-import lombok.*;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BoardImageDTO {
+public class RecipeImageDTO {
 
     private String uuid;
     private String fileName;
     private int ord;
-
-
 }

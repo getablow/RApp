@@ -9,7 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
 
 @MappedSuperclass
 @EntityListeners(value = { AuditingEntityListener.class })
@@ -18,10 +19,14 @@ abstract class BaseEntity {
 
     @CreatedDate
     @Column(name = "regdate", updatable = false)
-    private LocalDateTime regDate;
+    private LocalDate regDate;
 
     @LastModifiedDate
     @Column(name ="moddate" )
-    private LocalDateTime modDate;
+    private LocalDate modDate;
+
+    public void changeModDate(LocalDate modDate){
+        this.modDate = modDate;
+    }
 
 }

@@ -4,7 +4,7 @@
       layout:decorate="~{layout/basic.html}">
 
 <head>
-    <title>Board Modify</title>
+    <title>Recipe Modify</title>
 </head>
 
 <div layout:fragment="content">
@@ -12,13 +12,13 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Board Modify
+                    Recipe Modify
                 </div>
                 <div class="card-body">
-                    <form th:action="@{/board/modify}" method="post" id="f1">
+                    <form th:action="@{/recipe/modify}" method="post" id="f1">
                         <div class="input-group mb-3">
-                            <span class="input-group-text">Bno</span>
-                            <input type="text" class="form-control" th:value="${dto.bno}" name="bno" readonly>
+                            <span class="input-group-text">Rid</span>
+                            <input type="text" class="form-control" th:value="${dto.rid}" name="rid" readonly>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">Title</span>
@@ -26,8 +26,31 @@
                         </div>
 
                         <div class="input-group mb-3">
+                            <span class="input-group-text" >Ingredients&amount</span>
+                            <ul id="materialList" style="list-style:none">
+                                <div th:if="${dto.ingredients != null && dto.ingredients.size() > 0}" class="row justify-content-evenly">
+                                    <li id="liMaterial_1" th:each="ingredient: ${dto.ingredients}">
+                                        <div class="input-group">
+                                            <input type="text" name="name" aria-label="First name" class="form-control" placeholder="재료" th:value="${ingredient.name}">
+                                            <input type="text" name="amount" aria-label="Last name" class="form-control" placeholder="양" th:value="${ingredient.amount}">
+                                            <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
+                                        </div>
+                                    </li>
+                                </div>
+                            </ul>
+                            <div>
+                                <button type="button" onclick="addItem()" class="btn btn-secondary">ADD Ingredient</button>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
                             <span class="input-group-text">Content</span>
                             <textarea class="form-control col-sm-5" rows="5" name="content">[[${dto.content}]]</textarea>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">videoURL</span>
+                            <input type="text" class="form-control" name="videoUrl" th:value="${dto.videoUrl}">
                         </div>
 
                         <div class="input-group mb-3">
@@ -45,11 +68,11 @@
 
                         <div class="input-group mb-3">
                             <span class="input-group-text">RegDate</span>
-                            <input type="text" class="form-control" th:value="${#temporals.format(dto.regDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                            <input type="text" class="form-control" th:value="${#temporals.format(dto.regDate, 'yyyy-MM-dd')}" readonly>
                         </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text">ModDate</span>
-                            <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
+                            <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd')}" readonly>
                         </div>
 
                         <div class="my-4">
@@ -62,13 +85,11 @@
                     </form>
 
 
-                </div><!--end card body-->
-            </div><!--end card-->
-        </div><!-- end col-->
-    </div><!-- end row-->
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-    <!--file thumbnails-->
     <div class="row mt-3">
         <div class="col ">
             <div class="container-fluid d-flex uploadResult" style="flex-wrap:wrap;">
@@ -88,7 +109,7 @@
         </div>
     </div>
 
-    <!--file modal-->
+
     <div class="modal uploadModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -107,7 +128,7 @@
                 </div>
             </div>
         </div>
-    </div><!--end register modal-->
+    </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -140,7 +161,7 @@
         e.preventDefault()
         e.stopPropagation()
 
-        formObj.action = `/board/modify?${link}`
+        formObj.action = `/recipe/modify?${link}`
 
         //add file as <input type=hidden>
         appendFileData()
@@ -187,7 +208,7 @@
         appendNotShownData()
 
 
-        formObj.action = `/board/remove`
+        formObj.action = `/recipe/remove`
         formObj.method ='post'
         formObj.submit()
     }, false)
@@ -214,7 +235,7 @@
         e.stopPropagation()
 
         formObj.reset()
-        self.location =`/board/list?${link}`
+        self.location =`/recipe/list?${link}`
 
     }, false)
 
@@ -287,7 +308,31 @@
         uploadResult.innerHTML += str
     }
 
+    function addItem() {
+        var maxcount = 20;
+        var list = document.getElementById("materialList");
+        var itemCount = list.childElementCount;
+        var newItem = document.createElement("li");
+        newItem.id = "liMaterial_" + (itemCount + 1)
 
+        if(errors){
+            var newItem = document.createElement("li");
+            newItem.id = "liMaterial_1";
+        }else if(itemCount < maxcount){
+            newItem.innerHTML = `<div class="input-group">
+                                        <input type="text" aria-label="First name" class="form-control" placeholder="재료">
+                                        <input type="text" aria-label="Last name" class="form-control" placeholder="양">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
+                              </div>`;
+        }
+
+        list.appendChild(newItem);
+    }
+
+    function delItem(element) {
+        var parent = element.parentNode.parentNode;
+        parent.remove();
+    }
 
 
 </script>

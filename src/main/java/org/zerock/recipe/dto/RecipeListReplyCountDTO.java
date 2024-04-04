@@ -1,19 +1,21 @@
 package org.zerock.recipe.dto;
 
+
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
-public class BoardListReplyCountDTO {
+public class RecipeListReplyCountDTO {
 
-    private Long bno;
+    private Long rid;
 
     private String title;
 
     private String writer;
 
-    private LocalDateTime regDate;
+    private LocalDate regDate;
 
     private Long replyCount;
+
 }

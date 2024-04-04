@@ -9,43 +9,45 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.zerock.recipe.domain.Board;
 
-import org.zerock.recipe.domain.Reply;
+import org.zerock.recipe.domain.Recipe;
+import org.zerock.recipe.domain.RecipeReply;
+
 
 
 @SpringBootTest
 @Log4j2
 public class ReplyRepositoryTests {
 
+
     @Autowired
-    private ReplyRepository replyRepository;
+    private RecipeReplyRepository recipeReplyRepository;
 
     @Test
     public void testInsert(){
 
-        Long bno = 100L;
+        Long rid = 1L;
 
-        Board board = Board.builder().bno(bno).build();
+        Recipe recipe = Recipe.builder().rid(rid).build();
 
-        Reply reply = Reply.builder()
-                .board(board)
-                .replyText("replyrepository insert test......")
-                .replier("replier1")
+        RecipeReply recipeReply = RecipeReply.builder()
+                .recipe(recipe)
+                .replyText("recipeReplyRepository insert test......")
+                .replier("member1")
                 .build();
 
-        replyRepository.save(reply);
+        recipeReplyRepository.save(recipeReply);
     }
 
     //@Transactional
     @Test
     public void testBoardReplies(){
 
-        Long bno = 100L;
+        Long rid = 1L;
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("rno").descending());
 
-        Page<Reply> result = replyRepository.listOfBoard(bno, pageable);
+        Page<RecipeReply> result = recipeReplyRepository.listOfRecipe(rid, pageable);
 
         result.getContent().forEach(reply -> { log.info(reply); } );
     }

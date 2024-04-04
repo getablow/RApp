@@ -610,6 +610,7 @@ progress {
   border-radius: 0.25rem;
   max-width: 100%;
   height: auto;
+  object-fit: contain;
 }
 
 .figure {

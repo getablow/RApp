@@ -16,17 +16,50 @@
                 </div>
                 <div class="card-body">
                     <div class="input-group mb-3">
-                        <span class="input-group-text">Bno</span>
-                        <input type="text" class="form-control" th:value="${dto.bno}" readonly>
+                        <span class="input-group-text">Rid</span>
+                        <input type="text" class="form-control" th:value="${dto.rid}" readonly>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text">Title</span>
                         <input type="text" class="form-control" th:value="${dto.title}" readonly>
                     </div>
 
+                    <!--<div class="card" th:if="${dto.fileNames != null && dto.fileNames.size() > 0}">
+                        <img class="card-img-top" th:each="fileName: ${dto.fileNames}" th:src="|/view/${fileName}|">
+                    </div>-->
+
+
+                    <div class="row g-3">
+                        <ul id="materialList" style="list-style:none">
+                            <div th:if="${dto.ingredients != null && dto.ingredients.size() > 0}">
+                                <li id="liMaterial_1" th:each="ingredient: ${dto.ingredients}">
+                                    <div class="row g-3">
+                                        <div class="col">
+                                            <input type="text" class="form-control" placeholder="재료" th:value="${ingredient.name}" readonly>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" class="form-control" placeholder="양" th:value="${ingredient.amount}" readonly>
+                                        </div>
+                                    </div>
+                                </li>
+                            </div>
+                        </ul>
+                    </div>
+
                     <div class="input-group mb-3">
                         <span class="input-group-text">Content</span>
                         <textarea class="form-control col-sm-5" rows="5" readonly>[[${dto.content}]]</textarea>
+                    </div>
+
+                    <div class="input-group mb-3" th:if="${dto.videoUrl != null && dto.fileNames.size() > 0}">
+                        <iframe
+                                id="ytplayer"
+                                type="text/html"
+                                width="720"
+                                height="405"
+                                th:src="${dto.videoUrl}"
+                                allowfullscreen="allowfullscreen">
+                        </iframe>
                     </div>
 
                     <div class="input-group mb-3">
@@ -45,10 +78,10 @@
 
                     <div class="my-4" th:with="user=${#authentication.principal}">
                         <div class="float-end" th:with="link = ${pageRequestDTO.getLink()}">
-                            <a th:href="|@{/board/list}?${link}|" class="text-decoration-none">
+                            <a th:href="|@{/recipe/list}?${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-primary">List</button>
                             </a>
-                            <a th:if="${user != null && user.username == dto.writer}" th:href="|@{/board/modify(bno=${dto.bno})}&${link}|" class="text-decoration-none">
+                            <a th:if="${user != null && user.username == dto.writer}" th:href="|@{/recipe/modify(rid=${dto.rid})}&${link}|" class="text-decoration-none">
                                 <button type="button" class="btn btn-secondary">Modify</button>
                             </a>
                         </div>
@@ -137,7 +170,7 @@
 <script layout:fragment="script" th:inline="javascript">
 
     const currentUser = [[${#authentication.principal.username}]]
-    const bno = [[${dto.bno}]]
+    const rid = [[${dto.rid}]]
 
     const replyList = document.querySelector('.replyList') //댓글목록 DOM
     const replyPaging = document.querySelector('.replyPaging')//페이지 목록 DOM
@@ -178,7 +211,7 @@
     }
 
     function printReplies(page, size, goLast){
-        getList({bno, page, size, goLast}).then(data => {
+        getList({rid, page, size, goLast}).then(data => {
                 printList(data.dtoList)
                 printPages(data)
             }
@@ -206,7 +239,7 @@
     })
 
     registerBtn.addEventListener("click", function(e){
-        const replyObj = { bno:bno, replyText:replyText.value, replier:replier.value }
+        const replyObj = { rid: rid, replyText:replyText.value, replier:replier.value }
 
         addReply(replyObj).then(result => {
             alert(result.rno)
@@ -282,7 +315,7 @@
         }
 
         const replyObj = {
-            bno:bno,
+            rid:rid,
             rno:replyHeader.innerHTML,
             replyText:modifyText.value
         }

@@ -1,11 +1,13 @@
 package org.zerock.recipe.controller;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,29 +15,28 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.recipe.dto.*;
-import org.zerock.recipe.service.BoardService;
-
-import jakarta.validation.Valid;
+import org.zerock.recipe.service.RecipeService;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 
 @Controller
-@RequestMapping("/board")
+@RequestMapping("/recipe")
 @Log4j2
 @RequiredArgsConstructor
-public class BoardController {
+public class RecipeController {
 
     @Value("${org.zerock.upload.path}") //import 시 springframework로 시작하는 value
     private String uploadPath;
 
-    private final BoardService boardService;
+    private final RecipeService recipeService;
 
-    @GetMapping("/main")
-    public void testpage(PageRequestDTO pageRequestDTO, Model model) {
 
-        PageResponseDTO<BoardListAllDTO> responseDTO = boardService.listWithAll(pageRequestDTO);
+    @GetMapping("/testlist")
+    public void testpage(PageRequestDTO pageRequestDTO, Model model){
+
+        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
 
         log.info(responseDTO);
 
@@ -47,9 +48,7 @@ public class BoardController {
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO, Model model){
 
-        //PageResponseDTO<BoardDTO> responseDTO = boardService.list(pageRequestDTO);
-        //PageResponseDTO<BoardListReplyCountDTO> responseDTO = boardService.listWithReplyCount(pageRequestDTO);
-        PageResponseDTO<BoardListAllDTO> responseDTO = boardService.listWithAll(pageRequestDTO);
+        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
 
         log.info(responseDTO);
 
@@ -57,54 +56,67 @@ public class BoardController {
 
     }
 
+
     @PreAuthorize("hasRole('USER')") //사전에 권한 체크 postauthorize-사후
     @GetMapping("/register")
     public void registerGET(){
 
     }
 
-    @PostMapping("/register")
-    public String registerPost(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    @PostMapping("/recipes")
+    public ResponseEntity<String> createRecipe(@RequestBody List<RecipeIngredientDTO> ingredients) {
+        // Process the list of ingredients received from the frontend
+        for (RecipeIngredientDTO ingredient : ingredients) {
+            // Save each ingredient to the database or perform necessary operations
+            // For instance, you can add each ingredient to the recipe entity
+            // recipe.addIngredient(ingredient.getName(), ingredient.getAmount());
+        }
+        // Return appropriate response
+        return ResponseEntity.ok("Recipe created successfully");
+    }
 
-        log.info("board POST register.......");
+    @PostMapping("/register")
+    public String registerPost(@Valid RecipeDTO recipeDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+
+        log.info("recipe POST register.......");
 
         if(bindingResult.hasErrors()) {
             log.info("has errors.......");
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
-            return "redirect:/board/register";
+            return "redirect:/recipe/register";
         }
 
-        log.info(boardDTO);
+        log.info(recipeDTO);
 
-        Long bno = boardService.register(boardDTO);
+        Long rid = recipeService.register(recipeDTO);
 
-        redirectAttributes.addFlashAttribute("result", bno);
+        redirectAttributes.addFlashAttribute("result", rid);
 
-        return "redirect:/board/list";
+        return "redirect:/recipe/list";
     }
 
 
     @PreAuthorize("isAuthenticated()") //로그인 사용자 제한
     @GetMapping({"/read", "/modify"})
-    public void read(Long bno, PageRequestDTO pageRequestDTO, Model model){
+    public void read(Long rid, PageRequestDTO pageRequestDTO, Model model){
 
-        BoardDTO boardDTO = boardService.readOne(bno);
+        RecipeDTO recipeDTO = recipeService.readOne(rid);
 
-        log.info(boardDTO);
+        log.info(recipeDTO);
 
-        model.addAttribute("dto", boardDTO);
+        model.addAttribute("dto", recipeDTO);
 
     }
 
 
-    @PreAuthorize("principal.username == #boardDTO.writer")
+    @PreAuthorize("principal.username == #recipeDTO.writer")
     @PostMapping("/modify")
     public String modify( PageRequestDTO pageRequestDTO,
-                          @Valid BoardDTO boardDTO,
+                          @Valid RecipeDTO recipeDTO,
                           BindingResult bindingResult,
                           RedirectAttributes redirectAttributes){
 
-        log.info("board modify post......." + boardDTO);
+        log.info("recipe modify post......." + recipeDTO);
 
         if(bindingResult.hasErrors()) {
             log.info("has errors.......");
@@ -113,46 +125,32 @@ public class BoardController {
 
             redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
 
-            redirectAttributes.addAttribute("bno", boardDTO.getBno());
+            redirectAttributes.addAttribute("rid", recipeDTO.getRid());
 
-            return "redirect:/board/modify?"+link;
+            return "redirect:/recipe/modify?"+link;
         }
 
-        boardService.modify(boardDTO);
+        recipeService.modify(recipeDTO);
 
         redirectAttributes.addFlashAttribute("result", "modified");
 
-        redirectAttributes.addAttribute("bno", boardDTO.getBno());
+        redirectAttributes.addAttribute("rid", recipeDTO.getRid());
 
-        return "redirect:/board/read";
+        return "redirect:/recipe/read";
     }
 
-
-/*    @PostMapping("/remove")
-    public String remove(Long bno, RedirectAttributes redirectAttributes) {
-
-        log.info("remove post.. " + bno);
-
-        boardService.remove(bno);
-
-        redirectAttributes.addFlashAttribute("result", "removed");
-
-        return "redirect:/board/list";
-
-    }*/
-
-    @PreAuthorize("principal.username == #boardDTO.writer")
+    @PreAuthorize("principal.username == #recipeDTO.writer")
     @PostMapping("/remove")
-    public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
+    public String remove(RecipeDTO recipeDTO, RedirectAttributes redirectAttributes){
 
-        Long bno = boardDTO.getBno();
-        log.info("remove post.. " + bno);
+        Long rid = recipeDTO.getRid();
+        log.info("remove post.. " + rid);
 
-        boardService.remove(bno);
+        recipeService.remove(rid);
 
         //if the post has been deleted from the db, file is deleted
-        log.info(boardDTO.getFileNames());
-        List<String> fileNames = boardDTO.getFileNames();
+        log.info(recipeDTO.getFileNames());
+        List<String> fileNames = recipeDTO.getFileNames();
 
         if(fileNames != null && fileNames.size() > 0){
             removeFiles(fileNames);
@@ -160,7 +158,7 @@ public class BoardController {
 
         redirectAttributes.addFlashAttribute("result", "removed");
 
-        return "redirect:/board/list";
+        return "redirect:/recipe/list";
 
     }
 
@@ -185,6 +183,5 @@ public class BoardController {
             }
         }
     }
-
 
 }
