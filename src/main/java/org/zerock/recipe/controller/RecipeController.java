@@ -63,7 +63,7 @@ public class RecipeController {
 
     }
 
-    @PostMapping("/recipes")
+    /*@PostMapping("/recipes")
     public ResponseEntity<String> createRecipe(@RequestBody List<RecipeIngredientDTO> ingredients) {
         // Process the list of ingredients received from the frontend
         for (RecipeIngredientDTO ingredient : ingredients) {
@@ -73,7 +73,7 @@ public class RecipeController {
         }
         // Return appropriate response
         return ResponseEntity.ok("Recipe created successfully");
-    }
+    }*/
 
     @PostMapping("/register")
     public String registerPost(@Valid RecipeDTO recipeDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
