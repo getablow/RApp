@@ -3,15 +3,22 @@ package org.zerock.recipe.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
+import org.zerock.recipe.dto.RecipeDTO;
+import org.zerock.recipe.dto.RecipeIngredientDTO;
+import org.zerock.recipe.dto.upload.UploadResultDTO;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,8 +26,22 @@ import java.util.stream.IntStream;
 @Log4j2
 public class SampleController {
 
+    @Operation(summary = "ingredient")
+    @PostMapping("/saveingredient")
+    public String saveIng(RecipeDTO recipeDTO) {
 
+        log.info(recipeDTO);
 
+        if(recipeDTO.getIngredients() != null) {
+            recipeDTO.getIngredients().forEach(ingredients -> {
+
+                log.info(ingredients.getName());
+
+            });
+        }
+
+        return null;
+    }
 
     @Operation(summary = "hello")
     @GetMapping("/hello")
@@ -65,6 +86,7 @@ public class SampleController {
         }
     }
 
+    @Operation(summary = "ex2")
     @GetMapping("/ex/ex2")
     public void ex2(Model model) {
 

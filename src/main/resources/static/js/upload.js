@@ -23,21 +23,5 @@ async function removeFileToServer(uuid, fileName){
 
 }
 
-async function IngredientToServer(formObj){
-
-    const response = await axios.post('/recipes', ingredients)
-        .then(response => {
-            // Handle success
-            console.log(response.data);
-        })
-        .catch(error => {
-            // Handle error
-            console.error(error);
-        });
-
-    return response.data;
-
-
-}
 
 

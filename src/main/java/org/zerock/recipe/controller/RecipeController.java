@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.zerock.recipe.domain.Recipe;
 import org.zerock.recipe.dto.*;
 import org.zerock.recipe.service.RecipeService;
 
@@ -33,16 +35,6 @@ public class RecipeController {
     private final RecipeService recipeService;
 
 
-    @GetMapping("/testlist")
-    public void testpage(PageRequestDTO pageRequestDTO, Model model){
-
-        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
-
-        log.info(responseDTO);
-
-        model.addAttribute("responseDTO", responseDTO);
-
-    }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/list")
@@ -63,17 +55,7 @@ public class RecipeController {
 
     }
 
-    /*@PostMapping("/recipes")
-    public ResponseEntity<String> createRecipe(@RequestBody List<RecipeIngredientDTO> ingredients) {
-        // Process the list of ingredients received from the frontend
-        for (RecipeIngredientDTO ingredient : ingredients) {
-            // Save each ingredient to the database or perform necessary operations
-            // For instance, you can add each ingredient to the recipe entity
-            // recipe.addIngredient(ingredient.getName(), ingredient.getAmount());
-        }
-        // Return appropriate response
-        return ResponseEntity.ok("Recipe created successfully");
-    }*/
+
 
     @PostMapping("/register")
     public String registerPost(@Valid RecipeDTO recipeDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){

@@ -26,13 +26,14 @@ public class RecipeServiceTests {
         RecipeDTO recipeDTO = RecipeDTO.builder()
                 .title("Sample Title...")
                 .content("Sample Content...")
-                .writer("user00")
+                .writer("member1")
                 .build();
 
         recipeDTO.setIngredients(
                 Arrays.asList(
-                        new RecipeIngredientDTO(null, "돔화도", "4개")
-                )
+                        RecipeIngredientDTO.builder().name("돔마도").amount("1개").build(),
+                        RecipeIngredientDTO.builder().name("사과").amount("너무비쌈").build()
+                        )
         );
 
         Long rid = recipeService.register(recipeDTO);
@@ -83,9 +84,8 @@ public class RecipeServiceTests {
         RecipeDTO recipeDTO = RecipeDTO.builder()
                 .title("Testing at board service tests...")
                 .content("Sample Content...")
-                .writer("user00")
+                .writer("member1")
                 .videoUrl("abc")
-
                 .build();
 
         recipeDTO.setFileNames(
@@ -98,11 +98,9 @@ public class RecipeServiceTests {
 
         recipeDTO.setIngredients(
                 Arrays.asList(
-                        new RecipeIngredientDTO(null, "피망", "4개")
+                        new RecipeIngredientDTO(null, "콜라비", "4개")
                 )
         );
-
-
 
 
         Long rid = recipeService.register(recipeDTO);

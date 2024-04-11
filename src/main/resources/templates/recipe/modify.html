@@ -26,17 +26,16 @@
                         </div>
 
                         <div class="input-group mb-3">
-                            <span class="input-group-text" >Ingredients&amount</span>
-                            <ul id="materialList" style="list-style:none">
-                                <div th:if="${dto.ingredients != null && dto.ingredients.size() > 0}" class="row justify-content-evenly">
-                                    <li id="liMaterial_1" th:each="ingredient: ${dto.ingredients}">
+                            <ul id="materialList" style="list-style:none" class="list-group" th:if="${dto.ingredients != null && dto.ingredients.size() > 0}">
+                                <!--<div th:if="${dto.ingredients != null && dto.ingredients.size() > 0}" class="row justify-content-evenly">-->
+                                    <li th:id="${'liMaterial_'+iterStat.index}" th:each="ingredient, iterStat: ${dto.ingredients}">
                                         <div class="input-group">
-                                            <input type="text" name="name" aria-label="First name" class="form-control" placeholder="재료" th:value="${ingredient.name}">
-                                            <input type="text" name="amount" aria-label="Last name" class="form-control" placeholder="양" th:value="${ingredient.amount}">
+                                            <input type="text" th:name="'ingredients['+ ${iterStat.index} +'].name'" aria-label="First name" class="form-control" placeholder="재료" th:value="${ingredient.name}">
+                                            <input type="text" th:name="'ingredients['+ ${iterStat.index} +'].amount'" aria-label="Last name" class="form-control" placeholder="양" th:value="${ingredient.amount}">
                                             <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
                                         </div>
                                     </li>
-                                </div>
+                                <!--</div>-->
                             </ul>
                             <div>
                                 <button type="button" onclick="addItem()" class="btn btn-secondary">ADD Ingredient</button>
@@ -312,26 +311,37 @@
         var maxcount = 20;
         var list = document.getElementById("materialList");
         var itemCount = list.childElementCount;
-        var newItem = document.createElement("li");
-        newItem.id = "liMaterial_" + (itemCount + 1)
 
-        if(errors){
-            var newItem = document.createElement("li");
-            newItem.id = "liMaterial_1";
-        }else if(itemCount < maxcount){
-            newItem.innerHTML = `<div class="input-group">
-                                        <input type="text" aria-label="First name" class="form-control" placeholder="재료">
-                                        <input type="text" aria-label="Last name" class="form-control" placeholder="양">
-                                        <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
-                              </div>`;
+        if (errors || itemCount >= maxcount) {
+            return; // Exit function if there are errors or maximum count reached
         }
+
+        var newItem = document.createElement("li");
+        newItem.id = "liMaterial_" + (itemCount);
+
+        newItem.innerHTML = `<div class="input-group">
+                                <input type="text" name="ingredients[${itemCount}].name" aria-label="First name" class="form-control" placeholder="재료">
+                                <input type="text" name="ingredients[${itemCount}].amount" aria-label="Last name" class="form-control" placeholder="양">
+                                <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
+                          </div>`;
 
         list.appendChild(newItem);
     }
 
     function delItem(element) {
-        var parent = element.parentNode.parentNode;
-        parent.remove();
+        element.closest('li').remove();
+        adjustIndexes();
+    }
+
+    function adjustIndexes() {
+        const elements = document.querySelectorAll('[name^="ingredients"]');
+        let index = 0;
+
+        elements.forEach((element) => {
+            const newName = element.name.replace(/\[\d+\]/, '[' + ']');
+            element.name = newName;
+            index++;
+        })
     }
 
 

@@ -32,12 +32,12 @@
             </div>
 
             <div class="input-group mb-3">
-              <span class="input-group-text">Ingredients&amount</span>
-              <ul id="materialList" style="list-style:none">
+
+              <ul id="materialList" style="list-style:none" class="list-group">
                 <li id="liMaterial_1">
                   <div class="input-group">
-                    <input type="text" name="name" class="form-control" placeholder="재료">
-                    <input type="text" name="amount" class="form-control" placeholder="양">
+                    <input type="text" name="ingredients[0].name" class="form-control" placeholder="재료">
+                    <input type="text" name="ingredients[0].amount" class="form-control" placeholder="양">
                     <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
                   </div>
                 </li>
@@ -45,7 +45,6 @@
               <div>
                 <button type="button" onclick="addItem()" class="btn btn-secondary">ADD Ingredient</button>
               </div>
-
             </div>
 
 
@@ -139,8 +138,8 @@
 
   document.querySelector(".uploadFileBtn").addEventListener("click", function(e){
 
-    e.stopPropagation()// 이벤트가 상위 요소로 전파되지 않음
-    e.preventDefault()// 폼 제출을 방지
+    e.stopPropagation() // 이벤트가 상위 요소로 전파되지 않음
+    e.preventDefault() // 폼 제출을 방지
     uploadModal.show()
 
   }, false)
@@ -179,22 +178,6 @@
       }).catch(e => {
         uploadModal.hide()
       })
-
-    const ingredients = [];
-
-    document.querySelectorAll('#materialList li').forEach(item => {
-      const name = item.querySelector('input[name="name"]').value;
-      const amount = item.querySelector('input[name="amount"]').value;
-      const ingredient = {
-        name: name,
-        amount: amount
-      };
-      ingredients.push(ingredient);
-    });
-
-
-
-
 
   }, false)
 
@@ -251,10 +234,16 @@
 
     target.innerHTML = str;
 
-     const formObj = document.querySelector("form");
 
-     formObj.submit();
-     formObj.reset();
+    try {
+      //Submit the form
+      const formObj = document.querySelector("form");
+      formObj.submit();
+      // Clear file upload input and reset form
+      formObj.reset();
+    } catch (error) {
+      console.error(error);
+    }
 
   }, false)
 
@@ -271,8 +260,8 @@
       newItem.id = "liMaterial_1";
     }else if(itemCount < maxcount){
       newItem.innerHTML = `<div class="input-group">
-                                        <input type="text" name="name" aria-label="First name" class="form-control" placeholder="재료">
-                                        <input type="text" name="amount" aria-label="Last name" class="form-control" placeholder="양">
+                                        <input type="text" name="ingredients[${itemCount}].name" aria-label="First name" class="form-control" placeholder="재료">
+                                        <input type="text" name="ingredients[${itemCount}].amount" aria-label="Last name" class="form-control" placeholder="양">
                                         <button type="button" class="btn btn-outline-secondary" onclick="delItem(this)">X</button>
                               </div>`;
     }
@@ -284,5 +273,6 @@
     var parent = element.parentNode.parentNode;
     parent.remove();
   }
+
 
 </script>

@@ -46,22 +46,11 @@ public interface RecipeService {
             });
         }
 
-        /*if(recipeDTO.getIngredients() != null){
-            for (int i = 0; i < recipeDTO.getIngredients().size(); i += 2) {
-                String name = recipeDTO.getIngredients().get(i);
-                String amount = recipeDTO.getIngredients().get(i + 1);
-                recipe.addIngredients(name, amount);
+        if(recipeDTO.getIngredients() != null) {
+            for (RecipeIngredientDTO ingredientDTO : recipeDTO.getIngredients()) {
+                recipe.addIngredients(ingredientDTO.getName(), ingredientDTO.getAmount());
             }
-        }*/
-
-        if(recipeDTO.getIngredients() != null){
-            recipeDTO.getIngredients().forEach(ingredient -> {
-                String name = ingredient.getName();
-                String amount = ingredient.getAmount();
-                recipe.addIngredients(name, amount);
-            });
         }
-
 
         return recipe;
 
@@ -107,4 +96,6 @@ public interface RecipeService {
 
         return recipeDTO;
     }
+
+
 }

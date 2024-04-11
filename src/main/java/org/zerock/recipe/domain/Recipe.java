@@ -20,7 +20,7 @@ public class Recipe extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long rid;
 
-    @Column(length = 500, nullable = false) //컬럼의 길이와 null허용여부
+    @Column(length = 500, nullable = false)
     private String title;
 
     @Column(length = 1000, nullable = false)

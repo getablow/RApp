@@ -8,9 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.recipe.domain.Recipe;
+import org.zerock.recipe.domain.RecipeIngredient;
 import org.zerock.recipe.dto.*;
 import org.zerock.recipe.repository.RecipeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +28,7 @@ public class RecipeServiceImpl implements RecipeService{
     private final ModelMapper modelMapper;
 
     private final RecipeRepository recipeRepository;
+
 
     @Override
     public Long register(RecipeDTO recipeDTO) {
@@ -69,7 +72,7 @@ public class RecipeServiceImpl implements RecipeService{
             }
         }
 
-        //recipe.clearIngredients();
+        recipe.clearIngredients();
 
         if(recipeDTO.getIngredients() != null){
             for(RecipeIngredientDTO ingredient : recipeDTO.getIngredients()) {
