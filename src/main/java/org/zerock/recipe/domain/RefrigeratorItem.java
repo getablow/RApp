@@ -3,12 +3,14 @@ package org.zerock.recipe.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "refirgerator")
+@ToString(exclude = "refrigerator")
 public class RefrigeratorItem {
 
     @Id
@@ -16,8 +18,8 @@ public class RefrigeratorItem {
     private Long id;
 
     private String itemName;
-    private int quantity;
-    private String unit;
+    private String quantity;
+    private LocalDate expirationDate;
 
     @ManyToOne
     @JoinColumn(name = "refrigerator_id")
