@@ -56,6 +56,12 @@ public class CustomSecurityConfig {
             customizer.deleteCookies("JSESSIONID","remember-me");
         });
 
+
+        http.authorizeHttpRequests(authorize -> {
+            authorize.requestMatchers("/admin/**").hasRole("ADMIN")
+                    .requestMatchers("/**").permitAll();
+        });
+
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.rememberMe(httpSecurityRememberMeConfigurer -> {
