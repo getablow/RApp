@@ -6,40 +6,30 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.zerock.recipe.security.dto.MemberSecurityDTO;
 
 import java.io.IOException;
 
-
 @Log4j2
 @RequiredArgsConstructor
-public class CustomSocialLoginSuccessHandler implements AuthenticationSuccessHandler {
+public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
-        log.info("------------------------------------------------------------");
-        log.info("CustomLoginSuccessHandler onAuthenticationSuccess............");
-        log.info(authentication.getPrincipal());
-
-        MemberSecurityDTO memberSecurityDTO = (MemberSecurityDTO) authentication.getPrincipal();
-
-        String encodePw = memberSecurityDTO.getMpw();
-
-        if(memberSecurityDTO.isSocial() && (memberSecurityDTO.getMpw().equals("1111") || passwordEncoder.matches("1111", memberSecurityDTO.getMpw())) ){
-            log.info("Should Change Password");
-            log.info("Redirect to Member Modify");
-            response.sendRedirect("/member/modify");
-            return;
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            log.info("Redirect to Admin Home");
+            response.sendRedirect("/admin/home");
+        } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
+            log.info("Redirect to USER Home");
+            response.sendRedirect("/recipe/list");
         } else {
+            log.info("Redirect to Default Home");
             response.sendRedirect("/recipe/list");
         }
-
     }
-
 
 }

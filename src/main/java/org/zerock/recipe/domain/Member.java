@@ -1,13 +1,11 @@
 package org.zerock.recipe.domain;
 
 
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -24,12 +22,14 @@ public class Member extends BaseEntity{
     private String mpw;
     private String email;
     private boolean del;
-
     private boolean social;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Refrigerator> refrigerators;
 
     public void changePassword(String mpw) {
         this.mpw = mpw;

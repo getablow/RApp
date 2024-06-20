@@ -19,6 +19,9 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     @EntityGraph(attributePaths = "roleSet")
     Optional<Member> findByEmail(String email);
 
+    @EntityGraph(attributePaths = "roleSet")
+    Optional<Member> findByMid(String mid);
+
     @Modifying
     @Transactional
     @Query("update Member m set m.mpw = :mpw where m.mid = :mid")

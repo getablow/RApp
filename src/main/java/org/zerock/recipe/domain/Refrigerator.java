@@ -20,6 +20,10 @@ public class Refrigerator {
 
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @OneToMany(mappedBy = "refrigerator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefrigeratorItem> items = new ArrayList<>();
 }
