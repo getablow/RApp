@@ -2,6 +2,8 @@ package org.zerock.recipe.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
@@ -11,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(exclude = "refrigerator")
+@EntityListeners(value = { AuditingEntityListener.class })
 public class RefrigeratorItem {
 
     @Id
@@ -20,6 +23,10 @@ public class RefrigeratorItem {
     private String itemName;
     private String quantity;
     private LocalDate expirationDate;
+
+    @CreatedDate
+    @Column(name = "added_date", updatable = false)
+    private LocalDate addedDate;
 
     @ManyToOne
     @JoinColumn(name = "refrigerator_id")

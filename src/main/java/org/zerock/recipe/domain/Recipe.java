@@ -32,6 +32,9 @@ public class Recipe extends BaseEntity{
     @Column(length = 500)
     private String videoUrl;
 
+    @Column(nullable = false)
+    private boolean isShared;
+
     public void change(String title, String content, String videoUrl){
         this.title = title;
         this.content = content;
