@@ -37,6 +37,7 @@ public interface RecipeService {
                 .content(recipeDTO.getContent())
                 .videoUrl(recipeDTO.getVideoUrl())
                 .writer(recipeDTO.getWriter())
+                .isPrivate(recipeDTO.isPrivate())
                 .build();
 
         if(recipeDTO.getFileNames() != null){
@@ -64,6 +65,7 @@ public interface RecipeService {
                 .content(recipe.getContent())
                 .writer(recipe.getWriter())
                 .videoUrl(recipe.getVideoUrl())
+                .isPrivate(recipe.isPrivate())
                 .regDate(recipe.getRegDate())
                 .modDate(recipe.getModDate())
                 .build();

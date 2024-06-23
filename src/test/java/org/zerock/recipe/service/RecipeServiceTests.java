@@ -27,6 +27,7 @@ public class RecipeServiceTests {
                 .title("Sample Title...")
                 .content("Sample Content...")
                 .writer("member1")
+                .isPrivate(true)
                 .build();
 
         recipeDTO.setIngredients(
@@ -46,15 +47,16 @@ public class RecipeServiceTests {
 
         //변경에 필요한 데이터만
         RecipeDTO recipeDTO = RecipeDTO.builder()
-                .rid(69L)
-                .title("Updated....69")
-                .content("Updated content 69...")
+                .rid(9L)
+                .title("Updated....9")
+                .content("Updated content 9...")
+                .isPrivate(true)
                 .build();
 
-        recipeDTO.setFileNames(Arrays.asList(UUID.randomUUID()+"_uuu2.jpg"));
+        /*recipeDTO.setFileNames(Arrays.asList(UUID.randomUUID()+"_uuu2.jpg"));
         recipeDTO.setIngredients(Arrays.asList(new RecipeIngredientDTO(null, "update2","1개"),
                 new RecipeIngredientDTO(null, "update3","11개")
-                ));
+                ));*/
 
         recipeService.modify(recipeDTO);
 

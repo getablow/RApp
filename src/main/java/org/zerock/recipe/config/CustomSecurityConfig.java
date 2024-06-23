@@ -72,7 +72,7 @@ public class CustomSecurityConfig {
 
         http.rememberMe(httpSecurityRememberMeConfigurer -> {
 
-            httpSecurityRememberMeConfigurer.key("12345678")
+            httpSecurityRememberMeConfigurer.key("S@mpl3C0mpl3xK3yForY0urPr0j3ct!")
                     .tokenRepository(persistentTokenRepository())
                     .userDetailsService(userDetailsService)
                     .tokenValiditySeconds(60*60*24*30);
@@ -85,15 +85,9 @@ public class CustomSecurityConfig {
 
         });
 
-
-
-
-
         return http.build();
 
     }
-
-
 
     @Bean
     public AccessDeniedHandler accessDeniedHandler(){
@@ -106,10 +100,10 @@ public class CustomSecurityConfig {
 
         log.info("------------web configure--------------");
 
-        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations()); //정적자원 시큐리티해제
+        //정적자원 시큐리티 해제
+        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 
     }
-
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository(){

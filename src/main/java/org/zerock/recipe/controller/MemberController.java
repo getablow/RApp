@@ -2,8 +2,12 @@ package org.zerock.recipe.controller;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +37,6 @@ public class MemberController {
 
     }
 
-
-
     @GetMapping("/join")
     public void joinGET(String errorCode, String logout) {
 
@@ -61,5 +63,16 @@ public class MemberController {
         return "redirect:/member/login"; //회원가입 후 로그인
 
     }
+
+    @GetMapping("/login/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null){
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/member/login?logout";
+    }
+
+
 
 }

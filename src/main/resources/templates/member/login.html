@@ -12,6 +12,15 @@
     <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
     <!-- Core theme CSS (includes Bootstrap)-->
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <style>
+        .button-image {
+            width: 100%;
+            max-width: 280px; /* 고정된 최대 너비를 설정 */
+            height: 60px; /* 고정된 높이를 설정 */
+            object-fit: cover; /* 이미지가 잘리지 않고 고정 크기에 맞도록 조정 */
+            display: block;
+        }
+    </style>
 </head>
 <body class="align-middle" >
 <div class="container-fluid d-flex justify-content-center" style="height: 100vh">
@@ -37,21 +46,30 @@
                     <span class="input-group-text">패스워드</span>
                     <input type="password" name="password" class="form-control" placeholder="PASSWORD">
                 </div>
-                <div class="input-group mb-3 ">
-                    <input class="form-check-input" type="checkbox" name="remember-me">
-                    <label class="form-check-label">
-                        자동 로그인
-                    </label>
-                </div>
-                <div class="my-4">
+
+                <div class="btn-toolbar justify-content-between mb-3" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group" role="group" aria-label="First group">
+                        <input class="form-check-input" type="checkbox" name="remember-me">
+                        <label class="form-check-label">
+                            자동 로그인
+                        </label>
+                    </div>
                     <div class="float-end">
                         <button type="submit" class="btn btn-primary submitBtn">LOGIN</button>
                     </div>
                 </div>
-                <div class="bottom">
-                    <a href="/oauth2/authorization/kakao">KAKAO</a>
-                    <a href="/member/join">JOIN</a>
+
+                <div class="btn-group-vertical mb-3">
+
+                    <a href="/oauth2/authorization/kakao">
+                        <img th:src="@{/images/kakao_login_button.png}" alt="KAKAO" class="row mb-3" style="width: 400px; margin: 0 1px ">
+                    </a>
+                    <a href="/member/join">
+                        <img th:src="@{/images/join.png}" alt="JOIN" class="row mb-3" style="width: 400px; margin: 0 1px">
+                    </a>
+
                 </div>
+
 
             </form>
 

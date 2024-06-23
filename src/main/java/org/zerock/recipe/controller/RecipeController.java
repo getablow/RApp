@@ -35,6 +35,16 @@ public class RecipeController {
     private final RecipeService recipeService;
 
 
+    @GetMapping("/test")
+    public String redirectTest() {
+        return "redirect:/recipe/viewtest";
+    }
+
+    @GetMapping("/viewtest")
+    public String viewTest() {
+        return "recipe/viewtest";
+    }
+
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/list")
@@ -60,19 +70,31 @@ public class RecipeController {
     @PostMapping("/register")
     public String registerPost(@Valid RecipeDTO recipeDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
 
-        log.info("recipe POST register.......");
+        log.info("Recipe registration attempt");
+
+        log.info("Received RecipeDTO: {}", recipeDTO);
+        log.info("isPrivate value: {}", recipeDTO.isPrivate());
 
         if(bindingResult.hasErrors()) {
-            log.info("has errors.......");
-            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
-            return "redirect:/recipe/register";
+            log.warn("Recipe registration failed due to validation errors");
+            return "/recipe/register";
+            //redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
+            //return "redirect:/recipe/register";
         }
 
-        log.info(recipeDTO);
+        try {
+            Long rid = recipeService.register(recipeDTO);
+            log.info("recipe registered successfully with Id: {}", rid);
+        } catch (Exception e) {
+            log.error("Error occurred while registering recipe", e);
+            redirectAttributes.addFlashAttribute("error", "An error occurred while registering the recipe");
+        }
 
-        Long rid = recipeService.register(recipeDTO);
+        //log.info(recipeDTO);
 
-        redirectAttributes.addFlashAttribute("result", rid);
+        //Long rid = recipeService.register(recipeDTO);
+
+        //redirectAttributes.addFlashAttribute("result", rid);
 
         return "redirect:/recipe/list";
     }
@@ -99,6 +121,9 @@ public class RecipeController {
                           RedirectAttributes redirectAttributes){
 
         log.info("recipe modify post......." + recipeDTO);
+
+        log.info("Received RecipeDTO: {}", recipeDTO);
+        log.info("isPrivate value: {}", recipeDTO.isPrivate());
 
         if(bindingResult.hasErrors()) {
             log.info("has errors.......");

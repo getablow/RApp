@@ -32,13 +32,14 @@ public class Recipe extends BaseEntity{
     @Column(length = 500)
     private String videoUrl;
 
-    @Column(nullable = false)
-    private boolean isShared;
+    @Column(name="is_private" ,nullable = false)
+    private boolean isPrivate;
 
-    public void change(String title, String content, String videoUrl){
+    public void change(String title, String content, String videoUrl, boolean isPrivate){
         this.title = title;
         this.content = content;
         this.videoUrl = videoUrl;
+        this.isPrivate = isPrivate;
     }
 
     @OneToMany(mappedBy = "recipe", //Image의 recipe변수. 매핑테이블 생성하지않기위해 지정.

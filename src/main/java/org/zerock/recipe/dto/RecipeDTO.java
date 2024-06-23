@@ -3,6 +3,7 @@ package org.zerock.recipe.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,6 +47,9 @@ public class RecipeDTO {
     //Recipe에서 Set<BoardImages>타입으로 변환되어야만합니다
 
     private List<RecipeIngredientDTO> ingredients;
+
+    @NotNull
+    private boolean isPrivate;
 
 
 }
