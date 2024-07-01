@@ -52,7 +52,7 @@ public class CustomSecurityConfig {
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/user/**").hasRole("USER")
-                    .requestMatchers("/member/login/**").permitAll()
+                    .requestMatchers("/member/login/**", "/member/join/**").permitAll()
                     .anyRequest().authenticated();
         });
 

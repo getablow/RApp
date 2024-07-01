@@ -137,7 +137,10 @@ public class RecipeServiceTests {
                 .size(10)
                 .build();
 
-        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
+        //
+        // PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
+        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithReveal(pageRequestDTO, true);
+
 
         List<RecipeListAllDTO> dtoList = responseDTO.getDtoList();
 
@@ -155,15 +158,6 @@ public class RecipeServiceTests {
                     log.info(ingredient);
                 }
             }
-
-
-            /*if(recipeListAllDTO.getRecipeMaterials() != null){
-                for (Map.Entry<RecipeIngredientDTO, RecipeIngredientDTO> entry : recipeListAllDTO.getRecipeMaterials().entrySet()) {
-                    RecipeIngredientDTO key = entry.getKey();
-                    RecipeIngredientDTO value = entry.getValue();
-                    log.info(key + " : " + value);
-                }
-            }*/
 
 
             log.info("----------------------------------");

@@ -66,11 +66,10 @@
                 </div>
                 <div class="card-body container" >
 
-                    <ul class="container clearfix" th:with="link = ${pageRequestDTO.getLink()}">
+                    <ul class="container clearfix" th:with="link=${pageRequestDTO.getLink()}">
                         <li class="item" th:each="dto : ${responseDTO.dtoList}">
                             <div th:if="${dto.recipeImages != null && dto.recipeImages.size() > 0}" style="position: relative; border-radius: 4px; overflow: hidden; padding: 10px 2px;">
                                 <a th:href="|@{/recipe/read(rid=${dto.rid})}&${link}|">
-
                                     <img width="200" height="200" th:src="|/view/s_${dto.recipeImages[0].uuid}_${dto.recipeImages[0].fileName}|" onerror="this.src='/images/noimage.jpeg'">
                                 </a>
                             </div>
@@ -88,22 +87,16 @@
 
 
 
-                    <div class="float-start">
-                        <button type="button" class="btn btn-primary regBtn">레시피등록</button>
-                    </div>
                     <div class="float-end">
                         <ul class="pagination flex-wrap">
-
                             <li class="page-item" th:if="${responseDTO.prev}">
                                 <a class="page-link" th:data-num="${responseDTO.start -1}">Previous</a>
                             </li>
-
                             <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
                                 <li th:class="${responseDTO.page == i}?'page-item active':'page-item'" >
                                     <a class="page-link"  th:data-num="${i}">[[${i}]]</a>
                                 </li>
                             </th:block>
-
                             <li class="page-item" th:if="${responseDTO.next}">
                                 <a class="page-link"  th:data-num="${responseDTO.end + 1}">Next</a>
                             </li>
@@ -178,15 +171,7 @@
     }
 
 
-    document.querySelector(".regBtn").addEventListener("click", function(e){
 
-        e.preventDefault()
-        e.stopPropagation()
-
-        self.location =`/recipe/register`
-
-
-    }, false)
 
 
 </script>

@@ -28,6 +28,11 @@ public interface RecipeService {
     //게시글의 이미지와 댓글의 숫자까지 처리
     PageResponseDTO<RecipeListAllDTO> listWithAll(PageRequestDTO pageRequestDTO);
 
+    //로그인한 사용자의 게시물만 처리
+    PageResponseDTO<RecipeListAllDTO> listWithAllByWriter(PageRequestDTO pageRequestDTO, String writer);
+
+    PageResponseDTO<RecipeListAllDTO> listWithReveal(PageRequestDTO pageRequestDTO, Boolean reveal);
+
     //modelmapper 사용하지않고 메소드만들자
     default Recipe dtoToEntity(RecipeDTO recipeDTO){
 

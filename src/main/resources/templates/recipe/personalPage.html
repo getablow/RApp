@@ -68,7 +68,7 @@
 
                     <ul class="container clearfix" th:with="link = ${pageRequestDTO.getLink()}">
                         <th:block th:each="dto : ${responseDTO.dtoList}">
-                            <li class="item" th:if="${user != null && user.username == dto.writer}">
+                            <li class="item">
                                 <div th:if="${dto.recipeImages != null && dto.recipeImages.size() > 0}"
                                      style="position: relative; border-radius: 4px; overflow: hidden; padding: 10px 2px;">
                                     <a th:href="|@{/recipe/read(rid=${dto.rid})}&${link}|">

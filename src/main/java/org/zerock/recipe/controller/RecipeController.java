@@ -10,6 +10,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -39,19 +41,23 @@ public class RecipeController {
     @GetMapping("/communityPage")
     public void communityPage(PageRequestDTO pageRequestDTO, Model model){
 
-        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
+
+        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithReveal(pageRequestDTO, true);
 
         log.info(responseDTO);
 
         model.addAttribute("responseDTO", responseDTO);
 
+
     }
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/personalPage")
-    public void personalPage(PageRequestDTO pageRequestDTO, Model model){
+    public void personalPage(PageRequestDTO pageRequestDTO, Model model, @AuthenticationPrincipal User user){
 
-        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
+        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAllByWriter(pageRequestDTO, user.getUsername());
+
+        log.info("Login User Name = " + user.getUsername());
 
         log.info(responseDTO);
 
@@ -77,27 +83,20 @@ public class RecipeController {
 
         if(bindingResult.hasErrors()) {
             log.warn("Recipe registration failed due to validation errors");
-            return "/recipe/register";
-            //redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
-            //return "redirect:/recipe/register";
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors());
+            return "redirect:/recipe/register";
         }
 
         try {
             Long rid = recipeService.register(recipeDTO);
             log.info("recipe registered successfully with Id: {}", rid);
+            redirectAttributes.addAttribute("rid",rid);
+            return "redirect:/recipe/personalPage";
         } catch (Exception e) {
             log.error("Error occurred while registering recipe", e);
             redirectAttributes.addFlashAttribute("error", "An error occurred while registering the recipe");
+            return "redirect:/recipe/register";
         }
-
-        //log.info(recipeDTO);
-
-        //Long rid = recipeService.register(recipeDTO);
-
-        //redirectAttributes.addFlashAttribute("result", rid);
-
-        return "redirect:/recipe/list";
-
 
     }
 

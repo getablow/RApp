@@ -29,7 +29,6 @@ public class RecipeServiceImpl implements RecipeService{
 
     private final RecipeRepository recipeRepository;
 
-
     @Override
     public Long register(RecipeDTO recipeDTO) {
 
@@ -118,6 +117,7 @@ public class RecipeServiceImpl implements RecipeService{
 
     }
 
+
     //댓글 개수까지 불러오는 list 메소드이다
     @Override
     public PageResponseDTO<RecipeListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO) {
@@ -142,6 +142,46 @@ public class RecipeServiceImpl implements RecipeService{
         Pageable pageable = pageRequestDTO.getPageable("rid");
 
         Page<RecipeListAllDTO> result = recipeRepository.searchWithAll(types, keyword, pageable);
+
+        return PageResponseDTO.<RecipeListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<RecipeListAllDTO> listWithAllByWriter(PageRequestDTO pageRequestDTO, String writer){
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+
+        Pageable pageable = pageRequestDTO.getPageable("rid");
+
+
+        Page<RecipeListAllDTO> result = recipeRepository.searchWithAllByWriter(types, keyword, writer, pageable);
+
+        return PageResponseDTO.<RecipeListAllDTO>withAll()
+                .pageRequestDTO(pageRequestDTO)
+                .dtoList(result.getContent())
+                .total((int)result.getTotalElements())
+                .build();
+    }
+
+    @Override
+    public PageResponseDTO<RecipeListAllDTO> listWithReveal(PageRequestDTO pageRequestDTO, Boolean reveal) {
+
+        String[] types = pageRequestDTO.getTypes();
+        String keyword = pageRequestDTO.getKeyword();
+        Pageable pageable = pageRequestDTO.getPageable("rid");
+
+        /*Page<RecipeListAllDTO> result;
+    if (reveal != null && reveal) {
+        result = recipeRepository.searchWithReveal(types, keyword, true, pageable);
+    } else {
+        result = recipeRepository.searchWithAll(types, keyword, pageable);
+    }*/
+
+        Page<RecipeListAllDTO> result = recipeRepository.searchWithReveal(types, keyword, true, pageable);
 
         return PageResponseDTO.<RecipeListAllDTO>withAll()
                 .pageRequestDTO(pageRequestDTO)
