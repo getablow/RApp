@@ -31,7 +31,7 @@ public class RecipeListAllDTO {
 
     private List<RecipeIngredientDTO> recipeIngredients;
 
-    private boolean isPrivate;
+    private boolean reveal;
 
     /*private Map<RecipeIngredientDTO,RecipeIngredientDTO> recipeMaterials;*/
 

@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
+    <!--<meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>-->
     <title>Simple Sidebar - Start Bootstrap Template</title>
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" th:href="@{/assets/favicon.ico}" />
@@ -19,12 +21,22 @@
     <!-- Sidebar-->
     <div class="border-end bg-white" id="sidebar-wrapper">
         <div class="sidebar-heading border-bottom bg-light">Recipe</div>
-        <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/recipe/list.html}">MyRecipe</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Refrigerator</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Community</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Profile</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${param.logout == null}" th:href="@{/member/login/logout}">Logout</a>
+        <div th:with="principal=${#authentication.principal}">
+            <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/recipe/personalPage}">MyRecipe</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/recipe/refrigerator}">Refrigerator</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/recipe/communityPage}">Community</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Profile</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${param.logout == null}" th:href="@{/member/login/logout}">Logout</a>
+            </div>
+            <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="list-group list-group-flush">
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/admin/home}">Home</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/admin/inquiry}">문의내역</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/admin/managementPost}">게시글관리</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/admin/managementUser}">사용자관리</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/admin/statistics}">통계</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${param.logout == null}" th:href="@{/member/login/logout}">로그아웃</a>
+            </div>
         </div>
     </div>
     <!-- Page content wrapper-->

@@ -27,15 +27,15 @@ public class RecipeServiceTests {
                 .title("Sample Title...")
                 .content("Sample Content...")
                 .writer("member1")
-                .isPrivate(true)
+                .reveal(true)
                 .build();
 
-        recipeDTO.setIngredients(
+        /*recipeDTO.setIngredients(
                 Arrays.asList(
                         RecipeIngredientDTO.builder().name("돔마도").amount("1개").build(),
                         RecipeIngredientDTO.builder().name("사과").amount("너무비쌈").build()
                         )
-        );
+        );*/
 
         Long rid = recipeService.register(recipeDTO);
 
@@ -50,7 +50,7 @@ public class RecipeServiceTests {
                 .rid(9L)
                 .title("Updated....9")
                 .content("Updated content 9...")
-                .isPrivate(true)
+                .reveal(true)
                 .build();
 
         /*recipeDTO.setFileNames(Arrays.asList(UUID.randomUUID()+"_uuu2.jpg"));

@@ -118,4 +118,9 @@ public class SampleController {
         model.addAttribute("arr", new String[]{"AAA", "BBB", "CCC"});
 
     }
+
+    @GetMapping("/ex/ex4")
+    public void ex4(Model model){
+
+    }
 }

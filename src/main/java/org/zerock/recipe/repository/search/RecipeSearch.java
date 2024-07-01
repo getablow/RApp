@@ -16,5 +16,6 @@ public interface RecipeSearch {
 
     Page<RecipeListAllDTO> searchWithAll(String[] types, String keyword, Pageable pageable);
 
+    Page<RecipeListAllDTO> searchWithAllByWriter(String[] types, String keyword, String writer, Pageable pageable);
 
 }

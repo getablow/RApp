@@ -35,20 +35,21 @@ public class RecipeController {
     private final RecipeService recipeService;
 
 
-    @GetMapping("/test")
-    public String redirectTest() {
-        return "redirect:/recipe/viewtest";
-    }
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/communityPage")
+    public void communityPage(PageRequestDTO pageRequestDTO, Model model){
 
-    @GetMapping("/viewtest")
-    public String viewTest() {
-        return "recipe/viewtest";
-    }
+        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
 
+        log.info(responseDTO);
+
+        model.addAttribute("responseDTO", responseDTO);
+
+    }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/list")
-    public void list(PageRequestDTO pageRequestDTO, Model model){
+    @GetMapping("/personalPage")
+    public void personalPage(PageRequestDTO pageRequestDTO, Model model){
 
         PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
 
@@ -73,7 +74,6 @@ public class RecipeController {
         log.info("Recipe registration attempt");
 
         log.info("Received RecipeDTO: {}", recipeDTO);
-        log.info("isPrivate value: {}", recipeDTO.isPrivate());
 
         if(bindingResult.hasErrors()) {
             log.warn("Recipe registration failed due to validation errors");
@@ -97,18 +97,24 @@ public class RecipeController {
         //redirectAttributes.addFlashAttribute("result", rid);
 
         return "redirect:/recipe/list";
+
+
     }
 
 
     @PreAuthorize("isAuthenticated()") //로그인 사용자 제한
     @GetMapping({"/read", "/modify"})
-    public void read(Long rid, PageRequestDTO pageRequestDTO, Model model){
+    public void read(Long rid, PageRequestDTO pageRequestDTO, Model model, @SessionAttribute("referer") String referer){
+
+        //System.out.println("Referer in Controller: " + referer);
+        pageRequestDTO.setOrigin(referer!=null? referer : "personal");
 
         RecipeDTO recipeDTO = recipeService.readOne(rid);
 
         log.info(recipeDTO);
 
         model.addAttribute("dto", recipeDTO);
+        model.addAttribute("pageRequestDTO", pageRequestDTO);
 
     }
 
@@ -123,7 +129,7 @@ public class RecipeController {
         log.info("recipe modify post......." + recipeDTO);
 
         log.info("Received RecipeDTO: {}", recipeDTO);
-        log.info("isPrivate value: {}", recipeDTO.isPrivate());
+        log.info("isReveal value: {}", recipeDTO.isReveal());
 
         if(bindingResult.hasErrors()) {
             log.info("has errors.......");
@@ -189,6 +195,18 @@ public class RecipeController {
                 log.error(e.getMessage());
             }
         }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/refrigerator")
+    public void refrigerator(PageRequestDTO pageRequestDTO, Model model){
+
+        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
+
+        log.info(responseDTO);
+
+        model.addAttribute("responseDTO", responseDTO);
+
     }
 
 }

@@ -24,6 +24,8 @@ public class RecipeDTO {
 
     private Long rid;
 
+    private boolean reveal;
+
     @NotEmpty
     @Size(min = 3, max = 100)
     private String title;
@@ -48,8 +50,7 @@ public class RecipeDTO {
 
     private List<RecipeIngredientDTO> ingredients;
 
-    @NotNull
-    private boolean isPrivate;
+
 
 
 }

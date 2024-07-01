@@ -33,14 +33,14 @@ public class RecipeServiceImpl implements RecipeService{
     @Override
     public Long register(RecipeDTO recipeDTO) {
 
-        log.info("Registering recipe. DTO isPrivate: {}", recipeDTO.isPrivate());
+        log.info("Registering recipe. DTO isReveal: {}", recipeDTO.isReveal());
         Recipe recipe = dtoToEntity(recipeDTO);
-        log.info("Created entity. Entity isPrivate: {}", recipe.isPrivate());
+        log.info("Created entity. Entity isReveal: {}", recipe.isReveal());
         Long rid = recipeRepository.save(recipe).getRid();
         log.info("Saved entity. Returned ID: {}", rid);
 
         Recipe savedRecipe = recipeRepository.findById(rid).orElseThrow();
-        log.info("Saved recipe. Database isPrivate: {}", savedRecipe.isPrivate());
+        log.info("Saved recipe. Database isReveal: {}", savedRecipe.isReveal());
         return rid;
 
     }
@@ -65,7 +65,7 @@ public class RecipeServiceImpl implements RecipeService{
 
         Recipe recipe = result.orElseThrow();
 
-        recipe.change(recipeDTO.getTitle(), recipeDTO.getContent(), recipeDTO.getVideoUrl(), recipeDTO.isPrivate());
+        recipe.change(recipeDTO.getTitle(), recipeDTO.getContent(), recipeDTO.getVideoUrl(), recipeDTO.isReveal());
 
         //첨부파일의 처리
         recipe.clearImages();

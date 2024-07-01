@@ -27,6 +27,8 @@ public class PageRequestDTO {
 
     private String keyword;
 
+    private String origin;
+
     public String[] getTypes(){
         if(type == null || type.isEmpty()){
             return null;
@@ -60,9 +62,16 @@ public class PageRequestDTO {
                 } catch (UnsupportedEncodingException e) {
                 }
             }
+
+            if(this.origin != null){
+                builder.append("&origin=" + this.origin);
+            }
+
             link = builder.toString();
         }
 
+
+        System.out.println("Generated Link: " + this.link); //링크확인로그
         return link;
     }
 

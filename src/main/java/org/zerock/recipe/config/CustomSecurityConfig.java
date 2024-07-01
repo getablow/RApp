@@ -10,7 +10,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -48,7 +52,8 @@ public class CustomSecurityConfig {
         http.authorizeHttpRequests(authorize -> {
             authorize.requestMatchers("/admin/**").hasRole("ADMIN")
                     .requestMatchers("/user/**").hasRole("USER")
-                    .requestMatchers("/**").permitAll();
+                    .requestMatchers("/member/login/**").permitAll()
+                    .anyRequest().authenticated();
         });
 
         http.formLogin(form -> {
@@ -121,5 +126,6 @@ public class CustomSecurityConfig {
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new CustomSocialLoginSuccessHandler(passwordEncoder());
     }
+
 
 }

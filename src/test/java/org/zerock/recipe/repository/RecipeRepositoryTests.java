@@ -276,13 +276,13 @@ public class RecipeRepositoryTests {
 
     @Transactional
     @Test
-    public void testSearchImageReplyCount(){//most used DB -> board.java에서 batchsize 사용하면됨
+    public void testSearchImageReplyCount(){//most used DB -> 엔티티클래스(recipe.java)에서 batchsize 사용하면됨
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("rid").descending());
 
         //boardRepository.searchWithAll(null, null, pageable);
 
-        Page<RecipeListAllDTO> result = recipeRepository.searchWithAll(null, null, pageable);
+        Page<RecipeListAllDTO> result = recipeRepository.searchWithAllByWriter(null, null, "member1" ,pageable);
 
         log.info("---------------------------");
         log.info(result.getTotalElements());

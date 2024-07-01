@@ -61,7 +61,7 @@
             </div>
 
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="isPrivate" value="false">
+              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" name="reveal" value="true" checked>
               <label class="form-check-label" for="flexSwitchCheckDefault">레시피 공개여부</label>
             </div>
 
@@ -119,6 +119,41 @@
 
 
 <script layout:fragment="script" th:inline="javascript">
+  /** @type {import('axios').AxiosStatic} */
+  const axios = window.axios;
+
+
+  const axiosInstance = axios.create({
+    baseURL: '/',
+    timeout: 10000,
+    headers: {
+      'Content-Type': 'application/json',
+      //[csrfHeader]: csrfToken
+    }
+  });
+
+  // 요청 인터셉터
+  axiosInstance.interceptors.request.use(
+          config => {
+            // 요청 전에 수행할 작업
+            return config;
+          },
+          error => {
+            return Promise.reject(error);
+          }
+  );
+
+  // 응답 인터셉터
+  axiosInstance.interceptors.response.use(
+          response => {
+            // 응답 데이터를 처리
+            return response;
+          },
+          error => {
+            // 에러 응답을 처리
+            return Promise.reject(error);
+          }
+  );
 
   const auth = [[${#authentication.principal}]]
 
@@ -219,6 +254,8 @@
 
   }
 
+
+
   document.querySelector(".submitBtn").addEventListener("click", function(e){
 
     e.preventDefault()
@@ -238,18 +275,17 @@
       console.log(str)
     }
 
-    const existingHiddenInput = formObj.querySelector('input[name="isPrivate"]');
-    if (existingHiddenInput) {
-      existingHiddenInput.remove();
-    }
+    str += `<input type='hidden' name='reveal' value="${(!!privateSwitch.checked)}">`;
     //Add isPrivate hidden field
-    str += `<input type='hidden' name='isPrivate' value="${privateSwitch.checked}">`
+
 
     target.innerHTML = str;
 
+    console.log("Hidden field str:", str); // 히든필드 확인 ,추가 로그
+
 
     if(formObj.checkValidity()){
-      console.log("Submitting form. isPrivate value:", privateSwitch.checked);
+      console.log("Submitting form. isReveal value:", privateSwitch.checked);
       try {
         //Submit the form
         formObj.submit();
@@ -266,6 +302,63 @@
 
 
   }, false)
+  /*document.querySelector("form").addEventListener("submit", function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    const formData = new FormData(this);
+
+    // isPrivate 값 추가
+    const privateSwitch = document.getElementById("flexSwitchCheckDefault");
+    formData.set('isPrivate', privateSwitch.checked);
+
+    // 파일 정보 추가
+    const uploadFiles = document.querySelectorAll(".uploadResult img");
+    uploadFiles.forEach((img, index) => {
+      formData.append('fileNames', img.getAttribute("data-src"));
+    });
+
+    axios.post('/recipe/register', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+            .then(response => {
+              console.log('Success:', response.data);
+              alert("게시글이 등록되었습니다.");
+              window.location.href = '/recipe/list'; // 목록 페이지로 리다이렉트
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert("게시글 등록에 실패하였습니다.");
+              if (error.response) {
+                // 서버가 응답한 경우
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+                console.error('Response headers:', error.response.headers);
+              } else if (error.request) {
+                // 요청이 전송되었지만 응답을 받지 못한 경우
+                console.error('Request:', error.request);
+              } else {
+                // 요청 설정 중 오류가 발생한 경우
+                console.error('Error message:', error.message);
+              }
+            });
+  });*/
+
+ /* document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    console.log('Form is about to submit');
+    // 폼 데이터 로깅
+    const formData = new FormData(this);
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    // 사용자 확인 후 제출
+    if (confirm('폼을 제출하시겠습니까?')) {
+      //this.submit();
+    }
+  });*/
 
 
   function addItem() {

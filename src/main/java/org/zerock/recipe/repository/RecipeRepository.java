@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.zerock.recipe.domain.Recipe;
 import org.zerock.recipe.repository.search.RecipeSearch;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long>, RecipeSearch {
@@ -13,5 +14,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, RecipeSea
     @EntityGraph(attributePaths = {"imageSet","ingredientSet"}) //loading together
     @Query("select b from Recipe b where b.rid = :rid")
     Optional<Recipe> findByIdWithOthers(Long rid);
+
+    @EntityGraph(attributePaths = {"imageSet", "ingredientSet"})
+    @Query("select b from Recipe b where b.writer = :writer")
+    List<Recipe> findByWriter(String writer);
+
 
 }

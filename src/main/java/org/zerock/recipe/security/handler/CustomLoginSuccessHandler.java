@@ -25,10 +25,10 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             response.sendRedirect("/admin/home");
         } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER"))) {
             log.info("Redirect to USER Home");
-            response.sendRedirect("/recipe/list");
+            response.sendRedirect("/recipe/personalPage");
         } else {
             log.info("Redirect to Default Home");
-            response.sendRedirect("/recipe/list");
+            response.sendRedirect("/recipe/personalPage");
         }
     }
 

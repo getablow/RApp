@@ -19,5 +19,28 @@ public class AdminController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')") //사전에 권한 체크 postauthorize-사후
+    @GetMapping("/statistics")
+    public void statisticsGET(){
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')") //사전에 권한 체크 postauthorize-사후
+    @GetMapping("/inquiry")
+    public void inquiryGET(){
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')") //사전에 권한 체크 postauthorize-사후
+    @GetMapping("/managementUser")
+    public void managementUserGET(){
+
+    }
+
+    @PreAuthorize("hasRole('ADMIN')") //사전에 권한 체크 postauthorize-사후
+    @GetMapping("/managementPost")
+    public void managementPostGET(){
+
+    }
 
 }

@@ -37,7 +37,7 @@ public interface RecipeService {
                 .content(recipeDTO.getContent())
                 .videoUrl(recipeDTO.getVideoUrl())
                 .writer(recipeDTO.getWriter())
-                .isPrivate(recipeDTO.isPrivate())
+                .reveal(recipeDTO.isReveal())
                 .build();
 
         if(recipeDTO.getFileNames() != null){
@@ -65,7 +65,7 @@ public interface RecipeService {
                 .content(recipe.getContent())
                 .writer(recipe.getWriter())
                 .videoUrl(recipe.getVideoUrl())
-                .isPrivate(recipe.isPrivate())
+                .reveal(recipe.isReveal())
                 .regDate(recipe.getRegDate())
                 .modDate(recipe.getModDate())
                 .build();
@@ -75,14 +75,6 @@ public interface RecipeService {
 
         recipeDTO.setFileNames(fileNames);
 
-
-        /*List<String> ingredients = new ArrayList<>();
-
-        recipe.getIngredientSet().forEach(ingredient -> {
-            ingredients.add(ingredient.getName());
-            ingredients.add(ingredient.getAmount());
-        });
-        recipeDTO.setIngredients(ingredients);*/
 
 
         List<RecipeIngredientDTO> ingredientDTOS = new ArrayList<>();
