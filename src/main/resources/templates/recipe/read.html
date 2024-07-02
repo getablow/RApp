@@ -75,6 +75,12 @@
                         <span class="input-group-text">ModDate</span>
                         <input type="text" class="form-control" th:value="${#temporals.format(dto.modDate, 'yyyy-MM-dd HH:mm:ss')}" readonly>
                     </div>
+                    <div>
+                        <a id="likeButton" th:data-rid="${dto.rid}">
+                            <i class="bi bi-suit-heart" id="heartIcon"></i>
+                            <span id="favoriteCount" class="like-text" th:text="${dto.favoriteCount}"></span>
+                        </a>-
+                    </div>
 
                     <div class="my-4" th:with="user=${#authentication.principal}">
                         <div class="float-end" th:with="link = ${pageRequestDTO.getLink()}">
@@ -106,11 +112,41 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </div>
 
 
 <script layout:fragment="script" th:inline="javascript">
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const likeButton = document.getElementById('likeButton');
+        const heartIcon = likeButton.querySelector('#heartIcon');
+        const recipeId = likeButton.getAttribute('data-rid'); //
+        const favoriteCount = document.getElementById('favoriteCount'); //
+
+        if (likeButton && heartIcon && favoriteCount) {
+            likeButton.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                axios.post('/recipe/' + recipeId + '/favorite')
+                    .then(function(response) {
+                        alert('Recipe liked successfully!');
+                        if (heartIcon.classList.contains('bi-suit-heart')) {
+                            heartIcon.classList.remove('bi-suit-heart');
+                            heartIcon.classList.add('bi-suit-heart-fill');
+                        }
+                        // 좋아요 수 증가
+                        favoriteCount.textContent = response.data.favoriteCount;
+                    })
+                    .catch(function(error) {
+                        alert('An error occurred while liking the recipe');
+                        console.error('Error:', error);
+                    });
+            });
+        } else {
+            console.error('Like button or heart icon not found');
+        }
+    });
 
 </script>

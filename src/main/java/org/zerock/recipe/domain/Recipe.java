@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,7 +12,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"imageSet", "ingredientSet"})
+@ToString(exclude = {"imageSet", "ingredientSet", "favorites"})
 public class Recipe extends BaseEntity{
 
     @Id
@@ -34,6 +33,9 @@ public class Recipe extends BaseEntity{
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT false")
     private boolean reveal;
+
+    @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private int favoriteCount;
 
     public void change(String title, String content, String videoUrl, boolean reveal){
         this.title = title;
@@ -96,6 +98,19 @@ public class Recipe extends BaseEntity{
         ingredientSet.forEach(recipeIngredient -> recipeIngredient.changeRecipe(null));
 
         this.ingredientSet.clear();
+    }
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Favorite> favorites = new HashSet<>();
+
+    public void addFavorite() {
+        this.favoriteCount++;
+    }
+
+    public void removeFavorite() {
+        if (this.favoriteCount > 0) {
+            this.favoriteCount--;
+        }
     }
 
 }

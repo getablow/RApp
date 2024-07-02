@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.zerock.recipe.domain.Recipe;
 import org.zerock.recipe.domain.RecipeIngredient;
 import org.zerock.recipe.dto.*;
+import org.zerock.recipe.repository.FavoriteRepository;
 import org.zerock.recipe.repository.RecipeRepository;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class RecipeServiceImpl implements RecipeService{
     private final ModelMapper modelMapper;
 
     private final RecipeRepository recipeRepository;
+    private final FavoriteRepository favoriteRepository;
 
     @Override
     public Long register(RecipeDTO recipeDTO) {
@@ -189,5 +191,7 @@ public class RecipeServiceImpl implements RecipeService{
                 .total((int)result.getTotalElements())
                 .build();
     }
+
+
 
 }

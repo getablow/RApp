@@ -1,0 +1,62 @@
+@charset "UTF-8";
+
+:root {
+    /* 여기에 CSS 변수를 정의할 수 있습니다 */
+}
+
+.heart-icon {
+    background-image: url('../images/suit-heart.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+}
+
+.heart-icon-filled {
+    background-image: url('../images/suit-heart-fill.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+}
+
+/* 더 강력한 선택자 사용 */
+a#likeButton,
+a#likeButton:visited {
+    color: inherit !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    font-size: 2em; /* 전체 크기를 2배로 키움 */
+    display: inline-flex; /* 아이콘과 텍스트를 나란히 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+
+a#likeButton:hover {
+    color: inherit !important;
+}
+
+a#likeButton .bi-suit-heart,
+a#likeButton .bi-suit-heart-fill {
+    color: red !important;
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+}
+
+a#likeButton:hover .bi-suit-heart,
+a#likeButton:hover .bi-suit-heart-fill {
+    transform: scale(1.1);
+    color: darkred !important;
+}
+
+a#likeButton .like-text {
+    color: inherit !important; /* 텍스트 색상을 부모로부터 상속 */
+    margin-left: 0.3em; /* 아이콘과 텍스트 사이 간격 */
+    font-size: 0.5em; /* 텍스트 크기를 아이콘보다 작게 조정 */
+}
+
+a#likeButton:hover .like-text {
+    color: inherit !important;
+}
+

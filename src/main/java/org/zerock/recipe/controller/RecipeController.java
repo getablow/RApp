@@ -17,13 +17,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.zerock.recipe.domain.Recipe;
 import org.zerock.recipe.dto.*;
+import org.zerock.recipe.service.FavoriteService;
 import org.zerock.recipe.service.RecipeService;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/recipe")
@@ -35,6 +37,7 @@ public class RecipeController {
     private String uploadPath;
 
     private final RecipeService recipeService;
+    private final FavoriteService favoriteService;
 
 
     @PreAuthorize("hasRole('USER')")
@@ -207,5 +210,41 @@ public class RecipeController {
         model.addAttribute("responseDTO", responseDTO);
 
     }
+
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/{rid}/favorite")
+    public ResponseEntity<?> FavoriteRecipe(@PathVariable Long rid, @AuthenticationPrincipal User user) {
+        try {
+            log.info("User {} is attempting to like recipe {}", user.getUsername(), rid);
+            int favoriteCount = favoriteService.favoriteRecipe(user.getUsername(), rid);
+            Map<String, Object> response = new HashMap<>();
+            response.put("favoriteCount", favoriteCount);
+            response.put("message", "Recipe liked successfully");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error occurred while liking recipe", e);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "An error occurred while liking the recipe");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+    //좋아요 눌렀는지 확인용
+
+    @GetMapping("/{rid}/likeCount")
+    public ResponseEntity<?> getFavoriteCount(@PathVariable Long rid) {
+        try {
+            int likeCount = favoriteService.getFavoriteCount(rid);
+            Map<String, Object> response = new HashMap<>();
+            response.put("favoriteCount", likeCount);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error occurred while getting favorite count", e);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "An error occurred while getting the favorite count");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
 
 }

@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "roleSet")
+@ToString(exclude = {"roleSet", "refrigerators", "favorites"})
 public class Member extends BaseEntity{
 
     @Id
@@ -30,6 +30,9 @@ public class Member extends BaseEntity{
 
     @OneToMany(mappedBy = "member")
     private List<Refrigerator> refrigerators;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Favorite> favorites = new HashSet<>();
 
     public void changePassword(String mpw) {
         this.mpw = mpw;
