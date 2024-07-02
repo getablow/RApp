@@ -77,9 +77,9 @@
                     </div>
                     <div>
                         <a id="likeButton" th:data-rid="${dto.rid}">
-                            <i class="bi bi-suit-heart" id="heartIcon"></i>
+                            <i class="bi" id="heartIcon" th:classappend="${dto.favoriteConfirm} ? 'bi-suit-heart-fill' : 'bi-suit-heart'"></i>
                             <span id="favoriteCount" class="like-text" th:text="${dto.favoriteCount}"></span>
-                        </a>-
+                        </a>
                     </div>
 
                     <div class="my-4" th:with="user=${#authentication.principal}">
@@ -122,8 +122,10 @@
     document.addEventListener('DOMContentLoaded', function() {
         const likeButton = document.getElementById('likeButton');
         const heartIcon = likeButton.querySelector('#heartIcon');
-        const recipeId = likeButton.getAttribute('data-rid'); //
-        const favoriteCount = document.getElementById('favoriteCount'); //
+        const recipeId = likeButton.getAttribute('data-rid');
+        const favoriteCount = document.getElementById('favoriteCount');
+
+
 
         if (likeButton && heartIcon && favoriteCount) {
             likeButton.addEventListener('click', function(e) {
@@ -131,16 +133,18 @@
 
                 axios.post('/recipe/' + recipeId + '/favorite')
                     .then(function(response) {
-                        alert('Recipe liked successfully!');
                         if (heartIcon.classList.contains('bi-suit-heart')) {
                             heartIcon.classList.remove('bi-suit-heart');
                             heartIcon.classList.add('bi-suit-heart-fill');
+                        } else if (heartIcon.classList.contains('bi-suit-heart-fill')) {
+                            heartIcon.classList.remove('bi-suit-heart-fill');
+                            heartIcon.classList.add('bi-suit-heart');
                         }
                         // 좋아요 수 증가
                         favoriteCount.textContent = response.data.favoriteCount;
                     })
                     .catch(function(error) {
-                        alert('An error occurred while liking the recipe');
+                        alert('An error occurred while liking/unliking the recipe');
                         console.error('Error:', error);
                     });
             });

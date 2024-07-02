@@ -106,12 +106,17 @@ public class RecipeController {
 
     @PreAuthorize("isAuthenticated()") //로그인 사용자 제한
     @GetMapping({"/read", "/modify"})
-    public void read(Long rid, PageRequestDTO pageRequestDTO, Model model, @SessionAttribute("referer") String referer){
+    public void read(Long rid, PageRequestDTO pageRequestDTO, Model model, @SessionAttribute("referer") String referer, @AuthenticationPrincipal User user){
 
-        //System.out.println("Referer in Controller: " + referer);
-        pageRequestDTO.setOrigin(referer!=null? referer : "personal");
+        pageRequestDTO.setOrigin(referer != null? referer : "personal");
 
         RecipeDTO recipeDTO = recipeService.readOne(rid);
+
+        boolean favoriteConfirm = favoriteService.getFavoriteConfirm(user.getUsername(), rid);
+        int favoriteCount = favoriteService.getFavoriteCount(rid);
+
+        recipeDTO.setFavoriteConfirm(favoriteConfirm);
+        recipeDTO.setFavoriteCount(favoriteCount);
 
         log.info(recipeDTO);
 
@@ -217,10 +222,7 @@ public class RecipeController {
     public ResponseEntity<?> FavoriteRecipe(@PathVariable Long rid, @AuthenticationPrincipal User user) {
         try {
             log.info("User {} is attempting to like recipe {}", user.getUsername(), rid);
-            int favoriteCount = favoriteService.favoriteRecipe(user.getUsername(), rid);
-            Map<String, Object> response = new HashMap<>();
-            response.put("favoriteCount", favoriteCount);
-            response.put("message", "Recipe liked successfully");
+            Map<String, Object> response = favoriteService.favoriteRecipe(user.getUsername(), rid);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error occurred while liking recipe", e);

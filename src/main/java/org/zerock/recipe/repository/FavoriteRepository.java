@@ -9,5 +9,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     boolean existsByMemberAndRecipe(Member member, Recipe recipe);
 
+    void deleteByMemberAndRecipe(Member member, Recipe recipe);
+
     int countByRecipe(Recipe recipe);
 }

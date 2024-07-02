@@ -51,6 +51,7 @@ public class RecipeDTO {
     private List<RecipeIngredientDTO> ingredients;
 
     private int favoriteCount;
+    private boolean favoriteConfirm;
 
 
 
