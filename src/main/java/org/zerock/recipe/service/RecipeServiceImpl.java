@@ -68,11 +68,16 @@ public class RecipeServiceImpl implements RecipeService{
 
         RecipeDTO recipeDTO = entityToDTO(recipe);
 
+        recipe.riseViewCount();
+        recipeRepository.save(recipe);
+
         boolean favoriteConfirm = favoriteService.getFavoriteConfirm(username, rid);
         int favoriteCount = favoriteService.getFavoriteCount(rid);
+        int viewCount = recipe.getViewCount();
 
         recipeDTO.setFavoriteConfirm(favoriteConfirm);
         recipeDTO.setFavoriteCount(favoriteCount);
+        recipeDTO.setViewCount(viewCount);
 
         return recipeDTO;
     }
@@ -176,7 +181,6 @@ public class RecipeServiceImpl implements RecipeService{
         String keyword = pageRequestDTO.getKeyword();
 
         Pageable pageable = pageRequestDTO.getPageable("rid");
-
 
         Page<RecipeListAllDTO> result = recipeRepository.searchWithAllByWriter(types, keyword, writer, pageable);
 
