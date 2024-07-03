@@ -33,5 +33,8 @@ public class RecipeListAllDTO {
 
     private boolean reveal;
 
+    private int favoriteCount;
+    private int viewCount;
+
 
 }
