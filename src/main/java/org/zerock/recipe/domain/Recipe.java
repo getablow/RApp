@@ -37,6 +37,9 @@ public class Recipe extends BaseEntity{
     @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
     private int favoriteCount;
 
+    @Column(nullable = false, columnDefinition = "INTEGER DEFAULT 0")
+    private int viewCount;
+
     public void change(String title, String content, String videoUrl, boolean reveal){
         this.title = title;
         this.content = content;
@@ -112,6 +115,8 @@ public class Recipe extends BaseEntity{
             this.favoriteCount--;
         }
     }
+
+    public void riseViewCount() { this.viewCount++; }
 
 }
 
