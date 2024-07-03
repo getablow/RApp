@@ -46,6 +46,7 @@ public class RecipeSearchImpl extends QuerydslRepositorySupport implements Recip
             recipeJPQLQuery.where(booleanBuilder);
         }
 
+
         recipeJPQLQuery.groupBy(recipe);
 
         getQuerydsl().applyPagination(pageable, recipeJPQLQuery);
@@ -91,6 +92,8 @@ public class RecipeSearchImpl extends QuerydslRepositorySupport implements Recip
                 .title(recipe.getTitle())
                 .writer(recipe.getWriter())
                 .regDate(recipe.getRegDate())
+                .viewCount(recipe.getViewCount())
+                .favoriteCount(recipe.getFavoriteCount())
                 .replyCount(replyCount)
                 .build();
 

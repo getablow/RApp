@@ -12,7 +12,16 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Board Read
+                    <a id="" th:data-rid="${dto.rid}">
+                        <i class="bi" id="" th:classappend="${dto.favoriteConfirm} ? 'bi-suit-heart-fill' : 'bi-suit-heart'"></i>
+                    </a>
+                    <a th:if="${pageRequestDTO.origin.contains('communityPage')}" th:href="|@{/recipe/communityPage}?${link}|">
+                        <i class="bi bi-chevron-left"></i>
+                        <span>목록으로 이동</span>
+                    </a>
+                    <a th:if="${pageRequestDTO.origin.contains('communityPage')}" th:href="|@{/recipe/communityPage}?${link}|" class="text-decoration-none">
+                        <button type="button" class="btn btn-primary">List</button>
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="input-group mb-3">
