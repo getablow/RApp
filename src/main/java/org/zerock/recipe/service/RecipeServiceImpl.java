@@ -15,6 +15,7 @@ import org.zerock.recipe.repository.RecipeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,18 @@ public class RecipeServiceImpl implements RecipeService{
     private final ModelMapper modelMapper;
 
     private final RecipeRepository recipeRepository;
-    private final FavoriteRepository favoriteRepository;
+    private final FavoriteService favoriteService;
+
+    @Override
+    public Map<String, Object> favoriteRecipe(String username, Long rid) {
+        return favoriteService.favoriteRecipe(username, rid);
+    }
+
+    @Override
+    public int getFavoriteCount(Long rid) {
+        return favoriteService.getFavoriteCount(rid);
+    }
+
 
     @Override
     public Long register(RecipeDTO recipeDTO) {
@@ -47,7 +59,7 @@ public class RecipeServiceImpl implements RecipeService{
     }
 
     @Override
-    public RecipeDTO readOne(Long rid) {
+    public RecipeDTO readOne(String username,Long rid) {
 
         //recipe_image와 ingredients 까지 조인 처리되는 findByWithOthers()를 이용
         Optional<Recipe> result = recipeRepository.findByIdWithOthers(rid);
@@ -55,6 +67,12 @@ public class RecipeServiceImpl implements RecipeService{
         Recipe recipe = result.orElseThrow();
 
         RecipeDTO recipeDTO = entityToDTO(recipe);
+
+        boolean favoriteConfirm = favoriteService.getFavoriteConfirm(username, rid);
+        int favoriteCount = favoriteService.getFavoriteCount(rid);
+
+        recipeDTO.setFavoriteConfirm(favoriteConfirm);
+        recipeDTO.setFavoriteCount(favoriteCount);
 
         return recipeDTO;
     }

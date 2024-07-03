@@ -23,6 +23,7 @@ import org.zerock.recipe.service.RecipeService;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class RecipeController {
     private String uploadPath;
 
     private final RecipeService recipeService;
-    private final FavoriteService favoriteService;
+    //private final FavoriteService favoriteService; //임시로 해놓음. 지우고 favoriteService는 RecipeService에 전달받아 사용되어야만 한다.
 
 
     @PreAuthorize("hasRole('USER')")
@@ -110,13 +111,7 @@ public class RecipeController {
 
         pageRequestDTO.setOrigin(referer != null? referer : "personal");
 
-        RecipeDTO recipeDTO = recipeService.readOne(rid);
-
-        boolean favoriteConfirm = favoriteService.getFavoriteConfirm(user.getUsername(), rid);
-        int favoriteCount = favoriteService.getFavoriteCount(rid);
-
-        recipeDTO.setFavoriteConfirm(favoriteConfirm);
-        recipeDTO.setFavoriteCount(favoriteCount);
+        RecipeDTO recipeDTO = recipeService.readOne(user.getUsername(), rid);
 
         log.info(recipeDTO);
 
@@ -220,15 +215,14 @@ public class RecipeController {
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/{rid}/favorite")
     public ResponseEntity<?> FavoriteRecipe(@PathVariable Long rid, @AuthenticationPrincipal User user) {
+        log.info("User {} is attempting to like recipe {}", user.getUsername(), rid);
         try {
-            log.info("User {} is attempting to like recipe {}", user.getUsername(), rid);
-            Map<String, Object> response = favoriteService.favoriteRecipe(user.getUsername(), rid);
+            Map<String, Object> response = recipeService.favoriteRecipe(user.getUsername(), rid);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            log.error("Error occurred while liking recipe", e);
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "An error occurred while liking the recipe");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+            log.error("Error occurred while favoriting recipe", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("error", "An error occurred while favoriting the recipe"));
         }
     }
     //좋아요 눌렀는지 확인용
@@ -236,7 +230,7 @@ public class RecipeController {
     @GetMapping("/{rid}/likeCount")
     public ResponseEntity<?> getFavoriteCount(@PathVariable Long rid) {
         try {
-            int likeCount = favoriteService.getFavoriteCount(rid);
+            int likeCount = recipeService.getFavoriteCount(rid);
             Map<String, Object> response = new HashMap<>();
             response.put("favoriteCount", likeCount);
             return ResponseEntity.ok(response);
@@ -247,6 +241,7 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
 
 
 }

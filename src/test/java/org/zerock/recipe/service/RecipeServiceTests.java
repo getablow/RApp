@@ -114,8 +114,9 @@ public class RecipeServiceTests {
     public void testReadAll(){
 
         Long rid = 57L;
+        String username = "membertest";
 
-        RecipeDTO recipeDTO = recipeService.readOne(rid);
+        RecipeDTO recipeDTO = recipeService.readOne(username,rid);
 
         log.info(recipeDTO);
 
