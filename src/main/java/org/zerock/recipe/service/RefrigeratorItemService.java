@@ -16,6 +16,8 @@ public interface RefrigeratorItemService {
 
     RefrigeratorItemDTO addItem(RefrigeratorItemDTO itemDTO, String memberId);
 
+    void delItem(Long id, String memberId);
+
     //modelmapper 사용하지않고 메소드만들자
     default RefrigeratorItem dtoToEntity(RefrigeratorItemDTO itemDTO){
 

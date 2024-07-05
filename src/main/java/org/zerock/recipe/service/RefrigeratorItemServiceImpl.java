@@ -12,14 +12,11 @@ import org.zerock.recipe.domain.Refrigerator;
 import org.zerock.recipe.domain.RefrigeratorItem;
 import org.zerock.recipe.dto.PageRequestDTO;
 import org.zerock.recipe.dto.PageResponseDTO;
-import org.zerock.recipe.dto.RecipeListAllDTO;
 import org.zerock.recipe.dto.RefrigeratorItemDTO;
 import org.zerock.recipe.repository.MemberRepository;
 import org.zerock.recipe.repository.RefrigeratorItemRepository;
 import org.zerock.recipe.repository.RefrigeratorRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -86,6 +83,19 @@ public class RefrigeratorItemServiceImpl implements RefrigeratorItemService {
         return entityToDto(savedItem);
     }
 
+    @Override
+    public void delItem(Long id, String memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("Member not found"));
+
+        RefrigeratorItem item = refrigeratorItemRepository.findByIdWithOthers(id)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
+        if (!item.getRefrigerator().getMember().getMid().equals(memberId)){
+            throw new RuntimeException("Unauthorized deletion attempt");
+        }
+        refrigeratorItemRepository.deleteById(id);
+    }
 
 
 }

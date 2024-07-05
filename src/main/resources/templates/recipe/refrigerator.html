@@ -12,20 +12,15 @@
             overflow: hidden;
         }
 
-        .item {
-            list-style:none;
-            float: left;
-            width: 20%;
-            padding: 10px;
-            justify-content: space-evenly;
+        /* 기본적으로 마지막 <td> 요소 숨기기 */
+        #itemsTable .action-cell {
+            visibility: hidden;
         }
 
-        .clearfix::after {
-            content: "";
-            display: table;
-            clear: both;
+        /* 행에 마우스를 올렸을 때 마지막 <td> 요소 보이기 */
+        #itemsTable tr:hover .action-cell {
+            visibility: visible;
         }
-
     </style>
 
 </head>
@@ -69,18 +64,23 @@
                             <th scope="col">유통기한</th>
                             <th scope="col">이름</th>
                             <th scope="col">수량</th>
+                            <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="item, iterStat : ${responseDTO.dtoList}">
                             <th scope="row" th:text="${iterStat.count}"></th>
-                            <!--<td th:text="${#temporals.format(item.expirationDate, 'yyyy-MM-dd')}"><span></span></td>-->
                             <td>
                                 <span th:text="${#temporals.format(item.expirationDate, 'yyyy-MM-dd')}"></span>
                                 <span class="dday-badge"></span>
                             </td>
                             <td th:text="${item.itemName}"></td>
                             <td th:text="${item.quantity}"></td>
+                            <td class="action-cell">
+                                <a class="delete-item" th:data-id="${item.id}">
+                                    <i class="bi bi-x"></i>
+                                </a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -209,8 +209,8 @@
         rows.forEach(row => {
             const dateCell = row.querySelector('td:nth-child(2)');
             const expirationDate = dateCell.textContent.trim();
-            const ddaySapn = calculateDay(expirationDate);
-            dateCell.querySelector('.dday-badge').innerHTML = ddaySapn;
+            const ddaySpan = calculateDay(expirationDate);
+            dateCell.querySelector('.dday-badge').innerHTML = ddaySpan;
         })
 
 
@@ -235,6 +235,16 @@
                 })
         });
 
+        itemsTableBody.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-item') || e.target.closest('.delete-item')) {
+                e.preventDefault();
+                const deleteButton = e.target.closest('.delete-item');
+                const itemId = deleteButton.getAttribute('data-id');
+                const row = deleteButton.closest('tr');
+                deleteItemTable(itemId, row);
+            }
+        });
+
         function addItemToTable(item) {
             const newRow = document.createElement('tr');
             const rowCount = itemsTableBody.children.length + 1;
@@ -245,6 +255,11 @@
                 <td>${item.itemName}</sapn></td>
                 <td>${item.quantity}</td>
                 <td>${item.expirationDate} ${ddaySpan}</td>
+                <td class="action-cell">
+                <a class="delete-item" data-id="${item.id}">
+                    <i class="bi bi-x"></i>
+                </a>
+            </td>
             `;
             itemsTableBody.appendChild(newRow);
         }
@@ -273,6 +288,22 @@
                     console.error('Failed fetching items:', error);
                 })
         }
+
+        async function deleteItemTable(itemId, row) {
+            try {
+                const response = await axios.delete(`/recipe/refrigerator/items/${itemId}`);
+                if (response.status === 204) {
+                    row.remove();
+                    updateItemTable();
+                } else {
+                    alert('아이템 삭제 중 오류가 발생했습니다.');
+                }
+            } catch (error) {
+                console.error('아이템 삭제 중 오류 발생:', error);
+                alert('아이템 삭제 중 오류가 발생했습니다.');
+            }
+        }
+
 
         function calculateDay(expirationDate) {
             const today = new Date();

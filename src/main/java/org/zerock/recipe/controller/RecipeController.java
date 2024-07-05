@@ -237,20 +237,6 @@ public class RecipeController {
 
     private final RefrigeratorItemService refrigeratorItemService;
 
-    /*@PreAuthorize("hasRole('USER')")
-    @GetMapping("/refrigerator")
-    public void Refrigerator(PageRequestDTO pageRequestDTO, Model model, @AuthenticationPrincipal UserDetails userDetails){
-
-        String memberId = userDetails.getUsername();
-
-        PageResponseDTO<RefrigeratorItemDTO> responseDTO = refrigeratorItemService.getAllItemsByMemberId(pageRequestDTO, memberId);
-
-        log.info(responseDTO);
-
-        model.addAttribute("responseDTO", responseDTO);
-
-
-    }*/
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/refrigerator")
@@ -279,6 +265,18 @@ public class RecipeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding item: " + e.getMessage());
         }
 
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @DeleteMapping("/refrigerator/items/{id}")
+    public ResponseEntity<?> delItem(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String memberId = userDetails.getUsername();
+            refrigeratorItemService.delItem(id, memberId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting item: " + e.getMessage());
+        }
     }
 
 
