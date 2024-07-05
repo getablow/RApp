@@ -33,18 +33,13 @@
 <div layout:fragment="content">
 
     <div class="row mt-3">
-        <form action="/recipe/communityPage" method="get">
+        <form action="/recipe/refrigerator" method="get">
             <div class="col">
                 <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <select class="form-select" name="type">
-                            <option value="">---</option>
-                            <option value="t" th:selected="${pageRequestDTO.type =='t'}">제목</option>
-                            <option value="c" th:selected="${pageRequestDTO.type =='c'}">내용</option>
-                            <option value="w" th:selected="${pageRequestDTO.type =='w'}">작성자</option>
-                            <option value="tc" th:selected="${pageRequestDTO.type =='tc'}">제목 내용</option>
-                            <option value="tcw" th:selected="${pageRequestDTO.type =='tcw'}">제목 내용 작성자</option>
+                            <option value="t" th:selected="${pageRequestDTO.type =='n'}">이름</option>
                         </select>
                     </div>
                     <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
@@ -79,9 +74,13 @@
                         <tbody>
                         <tr th:each="item, iterStat : ${responseDTO.dtoList}">
                             <th scope="row" th:text="${iterStat.count}"></th>
-                            <td th:text="${#temporals.format(item.expirationDate, 'yyyy-MM-dd')}"></td>
+                            <!--<td th:text="${#temporals.format(item.expirationDate, 'yyyy-MM-dd')}"><span></span></td>-->
+                            <td>
+                                <span th:text="${#temporals.format(item.expirationDate, 'yyyy-MM-dd')}"></span>
+                                <span class="dday-badge"></span>
+                            </td>
                             <td th:text="${item.itemName}"></td>
-                            <td th:text="${item.quantity}">@</td>
+                            <td th:text="${item.quantity}"></td>
                         </tr>
                         </tbody>
                     </table>
@@ -89,6 +88,7 @@
                     <form id="addItemForm">
                         <input type="text" id="itemName" name="itemName" placeholder="재료 이름" required>
                         <input type="text" id="quantity" name="quantity" placeholder="수량" required>
+                        <label for="expirationDate">소비기한</label>
                         <input type="date" id="expirationDate" name="expirationDate" required>
                         <button type="submit">추가</button>
                     </form>
@@ -122,7 +122,7 @@
 
                             <th:block th:each="i: ${#numbers.sequence(responseDTO.start, responseDTO.end)}">
                                 <li th:class="${responseDTO.page == i}?'page-item active':'page-item'">
-                                    <a class="page-link" th:href="@{/refrigerator(page=${i}, size=${responseDTO.size})}" th:data-num="${i}">[[${i}]]</a>
+                                    <a class="page-link" th:href="@{/recipe/refrigerator(page=${i}, size=${responseDTO.size})}" th:data-num="${i}">[[${i}]]</a>
                                 </li>
                             </th:block>
 
@@ -204,6 +204,16 @@
         const addItemForm = document.getElementById('addItemForm');
         const itemsTableBody = document.querySelector('#itemsTable tbody');
 
+        //페이지 로드 시 D-day 계산 및 표시
+        const rows = document.querySelectorAll('#itemsTable tbody tr');
+        rows.forEach(row => {
+            const dateCell = row.querySelector('td:nth-child(2)');
+            const expirationDate = dateCell.textContent.trim();
+            const ddaySapn = calculateDay(expirationDate);
+            dateCell.querySelector('.dday-badge').innerHTML = ddaySapn;
+        })
+
+
         addItemForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -217,6 +227,7 @@
                 .then(function(response){
                     addItemToTable(response.data);
                     addItemForm.reset();
+                    updateItemTable();
                 })
                 .catch(function(error){
                     alert('재료 추가 중 오류가 발생했습니다.');
@@ -227,12 +238,13 @@
         function addItemToTable(item) {
             const newRow = document.createElement('tr');
             const rowCount = itemsTableBody.children.length + 1;
+            const ddaySpan = calculateDay(item.expirationDate);
 
             newRow.innerHTML = `
                 <th scope="row">${rowCount}</th>
-                <td>${item.itemName}</td>
+                <td>${item.itemName}</sapn></td>
                 <td>${item.quantity}</td>
-                <td>${item.expirationDate}</td>
+                <td>${item.expirationDate} ${ddaySpan}</td>
             `;
             itemsTableBody.appendChild(newRow);
         }
@@ -247,13 +259,43 @@
             })
                 .then(function (response) {
                     document.getElementById('itemsTable').outerHTML = response.data;
+
+                    const rows = document.querySelectorAll('#itemsTable tbody tr');
+                    rows.forEach(row => {
+                        const dateCell = row.querySelector('td:nth-child(2)');
+                        const expirationDate = dateCell.textContent.trim();
+                        const ddaySpan = calculateDay(expirationDate);
+                        dateCell.innerHTML += ` ${ddaySpan}`;
+
+                    })
                 })
                 .catch(function (error) {
                     console.error('Failed fetching items:', error);
                 })
         }
 
-        updateItemTable();
+        function calculateDay(expirationDate) {
+            const today = new Date();
+            const expDate = new Date(expirationDate);
+            const timeDiff = expDate - today;
+            const dayDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            let ddayText;
+            let badgeClass;
+
+            if(dayDiff > 0) {
+                ddayText = `D-${dayDiff}`;
+                badgeClass = "bg-info";
+            } else if(dayDiff === 0) {
+                ddayText = `D-Day`;
+                badgeClass = "bg-warning";
+            } else {
+                ddayText = `D+${Math.abs(dayDiff)}`;
+                badgeClass = "bg-danger";
+            }
+            return `<span class="badge ${badgeClass}">${ddayText}</span>`;
+        }
+
     })
 
 
