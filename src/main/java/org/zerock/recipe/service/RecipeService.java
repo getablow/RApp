@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public interface RecipeService {
 
     Map<String, Object> favoriteRecipe(java.lang.String username, Long rid);
+
     int getFavoriteCount(Long rid);
 
     Long register(RecipeDTO recipeDTO);

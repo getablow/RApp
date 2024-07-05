@@ -81,6 +81,11 @@
                             <div>
                                 <div><span>[[${dto.title}]]</span></div>
                                 <div><span>[[${dto.writer}]]</span></div>
+                                <div>
+                                    <div>
+                                        <i class="bi bi-eye"></i> [[${dto.viewCount}]] | <i class="bi-suit-heart-fill"></i> [[${dto.favoriteCount}]]
+                                    </div>
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -157,7 +162,7 @@
         e.preventDefault()
         e.stopPropagation()
 
-        self.location ='/recipe/main'
+        self.location ='/recipe/communityPage'
 
     },false)
 

@@ -22,10 +22,17 @@ public class Refrigerator {
 
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @OneToOne
+    @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
     @OneToMany(mappedBy = "refrigerator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefrigeratorItem> items = new ArrayList<>();
+
+    public void setMember(Member member) {
+        this.member = member;
+        if (member != null && member.getRefrigerator() != this) {
+            member.setRefrigerator(this);
+        }
+    }
 }

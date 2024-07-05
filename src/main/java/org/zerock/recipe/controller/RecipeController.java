@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.recipe.dto.*;
 import org.zerock.recipe.service.FavoriteService;
 import org.zerock.recipe.service.RecipeService;
+import org.zerock.recipe.service.RefrigeratorItemService;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -199,17 +201,7 @@ public class RecipeController {
         }
     }
 
-    @PreAuthorize("hasRole('USER')")
-    @GetMapping("/refrigerator")
-    public void refrigerator(PageRequestDTO pageRequestDTO, Model model){
 
-        PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAll(pageRequestDTO);
-
-        log.info(responseDTO);
-
-        model.addAttribute("responseDTO", responseDTO);
-
-    }
 
 
     @PreAuthorize("hasRole('USER')")
@@ -240,6 +232,53 @@ public class RecipeController {
             errorResponse.put("error", "An error occurred while getting the favorite count");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
+    }
+
+
+    private final RefrigeratorItemService refrigeratorItemService;
+
+    /*@PreAuthorize("hasRole('USER')")
+    @GetMapping("/refrigerator")
+    public void Refrigerator(PageRequestDTO pageRequestDTO, Model model, @AuthenticationPrincipal UserDetails userDetails){
+
+        String memberId = userDetails.getUsername();
+
+        PageResponseDTO<RefrigeratorItemDTO> responseDTO = refrigeratorItemService.getAllItemsByMemberId(pageRequestDTO, memberId);
+
+        log.info(responseDTO);
+
+        model.addAttribute("responseDTO", responseDTO);
+
+
+    }*/
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/refrigerator")
+    public String refrigerator(PageRequestDTO pageRequestDTO, Model model, @AuthenticationPrincipal UserDetails userDetails,
+                               @RequestParam(value = "isAjax", required = false, defaultValue = "false") boolean isAjax) {
+        String memberId = userDetails.getUsername();
+        PageResponseDTO<RefrigeratorItemDTO> responseDTO = refrigeratorItemService.getAllItemsByMemberId(pageRequestDTO, memberId);
+
+        model.addAttribute("responseDTO", responseDTO);
+
+        if (isAjax) {
+            return "recipe/refrigerator :: itemTable";  // Thymeleaf fragment name
+        } else {
+            return "recipe/refrigerator";  // 전체 뷰 이름
+        }
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/refrigerator/items")
+    public ResponseEntity<?> addItem(@RequestBody RefrigeratorItemDTO itemDTO, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String memberId = userDetails.getUsername();
+            RefrigeratorItemDTO savedItem = refrigeratorItemService.addItem(itemDTO, memberId);
+            return ResponseEntity.ok(savedItem);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding item: " + e.getMessage());
+        }
+
     }
 
 

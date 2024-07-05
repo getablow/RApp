@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = {"roleSet", "refrigerators", "favorites"})
+@ToString(exclude = {"roleSet", "refrigerator", "favorites"})
 public class Member extends BaseEntity{
 
     @Id
@@ -28,8 +28,8 @@ public class Member extends BaseEntity{
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
 
-    @OneToMany(mappedBy = "member")
-    private List<Refrigerator> refrigerators;
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Refrigerator refrigerator;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Favorite> favorites = new HashSet<>();
@@ -56,6 +56,12 @@ public class Member extends BaseEntity{
 
     public void changeSocial(boolean social) {
         this.social = social;
+    }
+    public void setRefrigerator(Refrigerator refrigerator) {
+        this.refrigerator = refrigerator;
+        if (refrigerator != null) {
+            refrigerator.setMember(this);
+        }
     }
 
 
