@@ -156,16 +156,9 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const addItemForm = document.getElementById('addItemForm');
-        const itemsTableBody = document.querySelector('#itemsTable tbody');
+        const itemsTable = document.getElementById('itemsTable');
 
-        //페이지 로드 시 D-day 계산 및 표시
-        const rows = document.querySelectorAll('#itemsTable tbody tr');
-        rows.forEach(row => {
-            const dateCell = row.querySelector('td:nth-child(2)');
-            const expirationDate = dateCell.textContent.trim();
-            const ddaySpan = calculateDay(expirationDate);
-            dateCell.querySelector('.dday-badge').innerHTML = ddaySpan;
-        })
+        updateDdayBadges();
 
 
         addItemForm.addEventListener('submit', function(e) {
@@ -189,7 +182,7 @@
                 })
         });
 
-        itemsTableBody.addEventListener('click', function(e) {
+        document.addEventListener('click', function(e) {
             if (e.target.classList.contains('delete-item') || e.target.closest('.delete-item')) {
                 e.preventDefault();
                 const deleteButton = e.target.closest('.delete-item');
@@ -200,22 +193,26 @@
         });
 
         function addItemToTable(item) {
+            const tbody = document.querySelector('#itemsTable tbody');
             const newRow = document.createElement('tr');
-            const rowCount = itemsTableBody.children.length + 1;
+            const rowCount = tbody.children.length + 1;
             const ddaySpan = calculateDay(item.expirationDate);
 
             newRow.innerHTML = `
                 <th scope="row">${rowCount}</th>
-                <td>${item.itemName}</sapn></td>
+                <td>
+                    <span>${item.expirationDate}</span>
+                    <span class="dday-badge">${ddaySpan}</span>
+                </td>
+                <td>${item.itemName}</td>
                 <td>${item.quantity}</td>
-                <td>${item.expirationDate} ${ddaySpan}</td>
                 <td class="action-cell">
-                <a class="delete-item" data-id="${item.id}">
-                    <i class="bi bi-x"></i>
-                </a>
-            </td>
+                    <a class="delete-item" data-id="${item.id}">
+                        <i class="bi bi-x"></i>
+                       </a>
+                </td>
             `;
-            itemsTableBody.appendChild(newRow);
+            tbody.appendChild(newRow);
         }
 
         function updateItemTable() {
@@ -227,16 +224,17 @@
                 }
             })
                 .then(function (response) {
-                    document.getElementById('itemsTable').outerHTML = response.data;
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(response.data, 'text/html');
+                    const newTbody = doc.querySelector('#itemsTable tbody');
 
-                    const rows = document.querySelectorAll('#itemsTable tbody tr');
-                    rows.forEach(row => {
-                        const dateCell = row.querySelector('td:nth-child(2)');
-                        const expirationDate = dateCell.textContent.trim();
-                        const ddaySpan = calculateDay(expirationDate);
-                        dateCell.innerHTML += ` ${ddaySpan}`;
-
-                    })
+                    if (newTbody) {
+                        const currentTbody = document.querySelector('#itemsTable tbody');
+                        currentTbody.innerHTML = newTbody.innerHTML;
+                        updateDdayBadges();
+                    } else {
+                        console.error('Failed to find tbody in the response');
+                    }
                 })
                 .catch(function (error) {
                     console.error('Failed fetching items:', error);
@@ -279,6 +277,22 @@
                 badgeClass = "bg-danger";
             }
             return `<span class="badge ${badgeClass}">${ddayText}</span>`;
+        }
+
+        function updateDdayBadges() {
+            const rows = document.querySelectorAll('#itemsTable tbody tr');
+            rows.forEach(row => {
+                const dateCell = row.querySelector('td:nth-child(2)');
+                const expirationDate = dateCell.querySelector('span:not(.dday-badge)').textContent.trim();
+                const ddaySpan = calculateDay(expirationDate);
+                let ddayBadge = dateCell.querySelector('.dday-badge');
+                if (!ddayBadge) {
+                    ddayBadge = document.createElement('span');
+                    ddayBadge.className = 'dday-badge';
+                    dateCell.appendChild(ddayBadge);
+                }
+                ddayBadge.innerHTML = ddaySpan;
+            });
         }
 
     })
