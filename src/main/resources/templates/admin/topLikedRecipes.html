@@ -16,6 +16,20 @@
 </head>
 <body>
 <div layout:fragment="content">
+    <div>
+        <ul class="nav nav-tabs" id="statisticsNav">
+            <li class="nav-item">
+                <a class="nav-link" data-type="home" th:href="@{/admin/statistics}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" data-type="topLikedRecipes" th:href="@{/admin/statistics/topLikedRecipes}">좋아요 top10</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-type="topViewedRecipes" th:href="@{/admin/statistics/topViewedRecipes}">조회수 top10</a>
+            </li>
+        </ul>
+    </div>
+
     <h1>Top 10 Liked Recipes</h1>
     <div id="chartContainer">
         <canvas id="topLikedRecipesChart" width="400" height="400"></canvas>
@@ -33,7 +47,7 @@
             data: {
                 labels: titles,
                 datasets: [{
-                    label: '조회수 높은 게시물',
+                    label: '좋아요수 높은 게시물',
                     data: likes,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',
