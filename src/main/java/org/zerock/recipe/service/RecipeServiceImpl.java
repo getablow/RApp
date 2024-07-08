@@ -5,15 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.recipe.domain.Recipe;
-import org.zerock.recipe.domain.RecipeIngredient;
 import org.zerock.recipe.dto.*;
-import org.zerock.recipe.repository.FavoriteRepository;
 import org.zerock.recipe.repository.RecipeRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -212,6 +210,23 @@ public class RecipeServiceImpl implements RecipeService{
                 .dtoList(result.getContent())
                 .total((int)result.getTotalElements())
                 .build();
+    }
+
+    public List<RecipeDTO> getTopLikedRecipes() {
+        Pageable pageable = PageRequest.of(0,10);
+        List<Recipe> recipes = recipeRepository.findTopByOrderByFavoriteCountDesc(pageable);
+        return recipes.stream()
+                .map(this::entityToDTO)
+                .collect(Collectors.toList());
+
+    }
+
+    public List<RecipeDTO> getTopViewedRecipes() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Recipe> recipes = recipeRepository.findTopByOrderByViewCount(pageable);
+        return recipes.stream()
+                .map(this::entityToDTO)
+                .collect(Collectors.toList());
     }
 
 

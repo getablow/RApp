@@ -2,12 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/basic.html}">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Statistics View</title>
 </head>
+
+<body>
+
+
 <div layout:fragment="content">
-    <h1>통계</h1>
+    <div>
+        <ul class="nav nav-tabs" id="statisticsNav">
+            <li class="nav-item">
+                <a class="nav-link active" data-type="home" th:href="@{/admin/statistics}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-type="topLikedRecipes" th:href="@{/admin/statistics/topLikedRecipes}">좋아요 top10</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-type="topViewedRecipes" th:href="@{/admin/statistics/topViewedRecipes}">조회수 top10</a>
+            </li>
+        </ul>
+    </div>
+
+    <h1 class="mt-4">statistics Home</h1>
+
+    <script th:inline="javascript">
+
+
+    </script>
+
 
 </div>
+</body>
 </html>

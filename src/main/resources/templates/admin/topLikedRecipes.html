@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Liked Recipes</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #chartContainer {
+            width: 50%;
+            height: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Top 10 Liked Recipes</h1>
+    <div id="chartContainer">
+        <canvas id="topLikedRecipesChart" width="400" height="400"></canvas>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const recipes = /*[[${recipes}]]*/ [];
+        const titles = recipes.map(recipe => recipe.title);
+        const likes = recipes.map(recipe => recipe.favoriteCount);
+
+        const ctx = document.getElementById('topLikedRecipesChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: titles,
+                datasets: [{
+                    label: '조회수 높은 게시물',
+                    data: likes,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+
+</body>
+</html>

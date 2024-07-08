@@ -68,7 +68,7 @@ public class RefrigeratorItemServiceImpl implements RefrigeratorItemService {
         Refrigerator refrigerator = refrigeratorRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new RuntimeException("Refrigerator not found for member"));
 
-        // 3. RefrigeratorItem 엔티티 생성
+        // RefrigeratorItem 엔티티 생성
         RefrigeratorItem newItem = RefrigeratorItem.builder()
                 .itemName(itemDTO.getItemName())
                 .quantity(itemDTO.getQuantity())
@@ -76,10 +76,10 @@ public class RefrigeratorItemServiceImpl implements RefrigeratorItemService {
                 .refrigerator(refrigerator)
                 .build();
 
-        // 4. RefrigeratorItem 저장
+        // RefrigeratorItem 저장
         RefrigeratorItem savedItem = refrigeratorItemRepository.save(newItem);
 
-        // 5. 저장된 엔티티를 DTO로 변환하여 반환
+        // 저장된 엔티티를 DTO로 변환하여 반환
         return entityToDto(savedItem);
     }
 

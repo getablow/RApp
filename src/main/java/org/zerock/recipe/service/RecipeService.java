@@ -37,6 +37,9 @@ public interface RecipeService {
 
     PageResponseDTO<RecipeListAllDTO> listWithReveal(PageRequestDTO pageRequestDTO, Boolean reveal);
 
+    List<RecipeDTO> getTopLikedRecipes();
+    List<RecipeDTO> getTopViewedRecipes();
+
     //modelmapper 사용하지않고 메소드만들자
     default Recipe dtoToEntity(RecipeDTO recipeDTO){
 
@@ -77,25 +80,38 @@ public interface RecipeService {
                 .reveal(recipe.isReveal())
                 .regDate(recipe.getRegDate())
                 .modDate(recipe.getModDate())
+                .viewCount(recipe.getViewCount())
+                .favoriteCount(recipe.getFavoriteCount())
+                .favoriteConfirm(false)
                 .build();
 
-        List<String> fileNames = recipe.getImageSet().stream().sorted()
-                .map(recipeImage -> recipeImage.getUuid() + "_" + recipeImage.getFileName()).collect(Collectors.toList());
+
+        List<String> fileNames = recipe.getImageSet().stream()
+                .sorted()
+                .map(recipeImage -> recipeImage.getUuid() + "_" + recipeImage.getFileName())
+                .collect(Collectors.toList());
 
         recipeDTO.setFileNames(fileNames);
 
 
 
-        List<RecipeIngredientDTO> ingredientDTOS = new ArrayList<>();
+        List<RecipeIngredientDTO> ingredientDTOS = recipe.getIngredientSet().stream()
+                .map(material -> RecipeIngredientDTO.builder()
+                        .name(material.getName())
+                        .amount(material.getAmount())
+                        .build())
+                .collect(Collectors.toList());
+
+        /*List<RecipeIngredientDTO> ingredientDTOS = new ArrayList<>();
         for (RecipeIngredient material : recipe.getIngredientSet()) {
             RecipeIngredientDTO ingredientDTO = new RecipeIngredientDTO();
             ingredientDTO.setName(material.getName());
             ingredientDTO.setAmount(material.getAmount());
             ingredientDTOS.add(ingredientDTO);
-        }
+        }*/
+
+
         recipeDTO.setIngredients(ingredientDTOS);
-
-
 
         return recipeDTO;
     }
