@@ -4,7 +4,11 @@
       layout:decorate="~{layout/basic.html}">
 <head>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <style>
         .container {
             display: block;
@@ -64,6 +68,8 @@
                         </tbody>
                     </table>
 
+
+
                     <div class="row mt-3">
                         <form action="/recipe/refrigerator" method="get">
                             <div class="col">
@@ -86,12 +92,13 @@
                             <label for="expirationDate">소비기한</label>
                             <input type="date" id="expirationDate" name="expirationDate" required>
                             <button type="submit">추가</button>
+                            <button class="btn btn-primary float-end" id="recommendButton">추천 레시피</button>
                         </form>
                     </div>
 
 
-                    <div class="float-end">
-                        <ul class="pagination flex-wrap">
+                    <div class="row mt-3">
+                        <ul class="pagination justify-content-end">
                             <li class="page-item" th:if="${responseDTO.prev}">
                                 <a class="page-link" th:href="@{/refrigerator(page=${responseDTO.start - 1}, size=${responseDTO.size})}" th:data-num="${responseDTO.start - 1}">Previous</a>
                             </li>
@@ -113,6 +120,27 @@
             </div><!--end card-->
         </div><!-- end col-->
     </div><!-- end row-->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="recipeModalLabel">Recommended Recipes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="recipeList" class="list-group">
+                        <!-- 레시피 제목이 여기에 추가됩니다. -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </div>
 
@@ -152,9 +180,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         const addItemForm = document.getElementById('addItemForm');
         const itemsTable = document.getElementById('itemsTable');
+        const recommendButton = document.getElementById('recommendButton');
 
         updateDdayBadges();
-
 
         addItemForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -185,6 +213,10 @@
                 const row = deleteButton.closest('tr');
                 deleteItemTable(itemId, row);
             }
+        });
+
+        recommendButton.addEventListener('click', function() {
+            fetchRecommendedRecipes();
         });
 
         function addItemToTable(item) {
@@ -250,6 +282,46 @@
                 alert('아이템 삭제 중 오류가 발생했습니다.');
             }
         }
+
+        function fetchRecommendedRecipes() {
+            axios.get('/api/recipes/recommend')
+                .then(function(response) {
+                    updateModal(response.data);
+                    $('#recipeModal').modal('show');
+                })
+                .catch(function(error) {
+                    console.error('Failed fetching recipes:', error);
+                    alert('레시피 가져오기 중 오류가 발생했습니다.');
+                });
+        }
+
+        function updateModal(recipes) {
+            const recipeList = document.getElementById('recipeList');
+            recipeList.innerHTML = '';
+
+            if (recipes.length === 0) {
+                recipeList.innerHTML = '<li class="list-group-item">No recipes found.</li>';
+            } else {
+                recipes.forEach(function(recipe) {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'list-group-item';
+                    /*listItem.textContent = recipe.title;*/
+                    listItem.innerHTML = `<a href="#" class="recipe-link" data-rid="${recipe.rid}">${recipe.title}</a>`;
+                    recipeList.appendChild(listItem);
+                });
+            }
+
+            const recipeLinks = document.querySelectorAll('.recipe-link');
+            recipeLinks.forEach(function(link){
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const rid = this.getAttribute('data-rid');
+                    window.location.href = `/recipe/read?rid=${rid}`;
+                });
+            });
+
+        }
+
 
 
         function calculateDay(expirationDate) {
