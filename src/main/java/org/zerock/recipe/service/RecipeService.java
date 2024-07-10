@@ -40,6 +40,8 @@ public interface RecipeService {
     List<RecipeDTO> getTopLikedRecipes();
     List<RecipeDTO> getTopViewedRecipes();
 
+    List<RecipeDTO> findRecipesByIngredients(String memberId);
+
     //modelmapper 사용하지않고 메소드만들자
     default Recipe dtoToEntity(RecipeDTO recipeDTO){
 

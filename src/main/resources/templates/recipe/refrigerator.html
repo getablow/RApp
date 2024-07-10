@@ -283,6 +283,7 @@
             }
         }
 
+
         function fetchRecommendedRecipes() {
             axios.get('/api/recipes/recommend')
                 .then(function(response) {
@@ -298,6 +299,9 @@
         function updateModal(recipes) {
             const recipeList = document.getElementById('recipeList');
             recipeList.innerHTML = '';
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const linkParams = urlParams.toString();
 
             if (recipes.length === 0) {
                 recipeList.innerHTML = '<li class="list-group-item">No recipes found.</li>';
@@ -316,7 +320,8 @@
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const rid = this.getAttribute('data-rid');
-                    window.location.href = `/recipe/read?rid=${rid}`;
+                    const linkParams = this.getAttribute('data-link');
+                    window.location.href = `/recipe/read?rid=${rid}&${linkParams}`;
                 });
             });
 

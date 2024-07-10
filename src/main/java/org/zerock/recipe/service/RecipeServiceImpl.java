@@ -8,13 +8,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.zerock.recipe.domain.Member;
 import org.zerock.recipe.domain.Recipe;
+import org.zerock.recipe.domain.RefrigeratorItem;
 import org.zerock.recipe.dto.*;
 import org.zerock.recipe.repository.RecipeRepository;
+import org.zerock.recipe.repository.RefrigeratorItemRepository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -29,6 +30,7 @@ public class RecipeServiceImpl implements RecipeService{
 
     private final RecipeRepository recipeRepository;
     private final FavoriteService favoriteService;
+    private final RefrigeratorItemRepository refrigeratorItemRepository;
 
     @Override
     public Map<String, Object> favoriteRecipe(String username, Long rid) {
@@ -229,6 +231,25 @@ public class RecipeServiceImpl implements RecipeService{
                 .collect(Collectors.toList());
     }
 
+    public List<RecipeDTO> findRecipesByIngredients(String memberId) {
+        // 사용자 냉장고 재료와 회원 정보 가져오기
+        List<Object[]> refrigeratorItemsWithMember = refrigeratorItemRepository.findRefrigeratorItemsWithMember(memberId);
+
+        // RefrigeratorItem과 Member 정보 분리하기
+        List<String> ingredientNames = new ArrayList<>();
+        for (Object[] result : refrigeratorItemsWithMember) {
+            RefrigeratorItem item = (RefrigeratorItem) result[0];
+            ingredientNames.add(item.getItemName());
+        }
+
+        // 레시피 엔티티 가져오기
+        List<Recipe> recipes = recipeRepository.findRecipesByIngredientsAndWriter(ingredientNames, memberId);
+
+        // 엔티티를 DTO로 변환
+        return recipes.stream()
+                .map(this::entityToDTO)
+                .collect(Collectors.toList());
+    }
 
 
 }

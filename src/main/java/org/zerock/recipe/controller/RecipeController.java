@@ -279,6 +279,12 @@ public class RecipeController {
         }
     }
 
+    @GetMapping("/recommend")
+    public String showrecommendPage() {
+        return "recipe/recommend";
+    }
+
+
 
 
 
