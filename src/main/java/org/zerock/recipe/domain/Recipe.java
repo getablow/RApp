@@ -103,6 +103,7 @@ public class Recipe extends BaseEntity{
         this.ingredientSet.clear();
     }
 
+    @Builder.Default
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Favorite> favorites = new HashSet<>();
 

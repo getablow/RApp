@@ -26,6 +26,7 @@ public class Refrigerator {
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
+    @Builder.Default
     @OneToMany(mappedBy = "refrigerator", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefrigeratorItem> items = new ArrayList<>();
 

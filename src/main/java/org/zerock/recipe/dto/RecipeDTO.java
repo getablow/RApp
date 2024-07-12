@@ -37,8 +37,10 @@ public class RecipeDTO {
     private String writer;
 
     private String videoUrl;
+    private String videoId;
 
     private int viewCount;
+
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate regDate;

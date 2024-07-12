@@ -16,8 +16,11 @@ import org.zerock.recipe.repository.RecipeRepository;
 import org.zerock.recipe.repository.RefrigeratorItemRepository;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static java.util.Locale.filter;
 
 
 @Service
@@ -79,7 +82,25 @@ public class RecipeServiceImpl implements RecipeService{
         recipeDTO.setFavoriteCount(favoriteCount);
         recipeDTO.setViewCount(viewCount);
 
+        // 유튜브 동영상 ID 추출 및 설정
+        String videoUrl = recipeDTO.getVideoUrl();
+        if (videoUrl != null && !videoUrl.isEmpty()) {
+            String videoId = extractVideoId(videoUrl);
+            recipeDTO.setVideoId(videoId);
+        }
+
         return recipeDTO;
+    }
+
+    public String extractVideoId(String videoLink) {
+        String videoId = null;
+        String regex = "^(?:https?://)?(?:www\\.)?(?:youtube\\.com(?:/embed/|/v/|/watch\\?v=)|youtu\\.be/)([a-zA-Z0-9_-]{11})";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher =  pattern.matcher(videoLink);
+        if(matcher.find()) {
+            videoId = matcher.group(1);
+        }
+        return videoId;
     }
 
     @Override
@@ -248,6 +269,18 @@ public class RecipeServiceImpl implements RecipeService{
         // 엔티티를 DTO로 변환
         return recipes.stream()
                 .map(this::entityToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ActivityByHourDTO> getViewCountAndFavoriteCountByHour() {
+        List<Object[]> results = recipeRepository.findViewCountAndFavoriteCountByHour();
+        return results.stream()
+                .filter(result -> result[0] != null && result[1] != null && result[2] != null)
+                .map(result -> ActivityByHourDTO.builder()
+                        .hour((int) result[0])
+                        .viewCount((long) result[1])
+                        .favoriteCount((long) result[2])
+                        .build())
                 .collect(Collectors.toList());
     }
 

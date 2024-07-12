@@ -42,6 +42,8 @@ public interface RecipeService {
 
     List<RecipeDTO> findRecipesByIngredients(String memberId);
 
+    List<ActivityByHourDTO> getViewCountAndFavoriteCountByHour();
+
     //modelmapper 사용하지않고 메소드만들자
     default Recipe dtoToEntity(RecipeDTO recipeDTO){
 

@@ -11,6 +11,8 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @MappedSuperclass
 @EntityListeners(value = { AuditingEntityListener.class })
@@ -25,8 +27,13 @@ abstract class BaseEntity {
     @Column(name ="moddate" )
     private LocalDate modDate;
 
-    public void changeModDate(LocalDate modDate){
-        this.modDate = modDate;
-    }
+    @CreatedDate
+    @Column(name="regtime", updatable = false)
+    private LocalTime regTime;
+
+    @LastModifiedDate
+    @Column(name = "modtime")
+    private LocalTime modTime;
+
 
 }

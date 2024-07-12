@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.zerock.recipe.domain.Recipe;
+import org.zerock.recipe.dto.ActivityByHourDTO;
 import org.zerock.recipe.dto.RecipeDTO;
 import org.zerock.recipe.service.RecipeService;
 
@@ -81,4 +82,15 @@ public class AdminController {
         return "admin/topViewedRecipes";
     }
 
+
+    /**
+     * 좋아요수, 조회수 기반 시간대별 활성도
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/statistics/activity-by-hour")
+    public String getActivityByHour(Model model) {
+        List<ActivityByHourDTO> activityByHour = recipeService.getViewCountAndFavoriteCountByHour();
+        model.addAttribute("activityByHour", activityByHour);
+        return "admin/activity_by_hour";
+    }
 }

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>Top Liked Recipes</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        #chartContainer {
+            width: 50%;
+            height: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div>
+        <ul class="nav nav-tabs" id="statisticsNav">
+            <li class="nav-item">
+                <a class="nav-link" data-type="home" th:href="@{/admin/statistics}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-type="topLikedRecipes" th:href="@{/admin/statistics/topLikedRecipes}">좋아요 top10</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-type="topViewedRecipes" th:href="@{/admin/statistics/topViewedRecipes}">조회수 top10</a>
+            </li>
+            <li class="nav-time">
+                <a class="nav-link active" data-type="activityByHourAndFavorite" th:href="@{/admin/statistics/activity-by-hour}">사용자활성시간</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="chartContainer">
+        <canvas id="activityChart" width="400" height="400"></canvas>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        var ctx = document.getElementById('activityChart').getContext('2d');
+        var activityByHour = [[${activityByHour}]];
+
+        var labels = activityByHour.map(function(item) { return item.hour + '시'; });
+        var views = activityByHour.map(function(item) { return item.viewCount; });
+        var likes = activityByHour.map(function(item) { return item.favoriteCount; });
+
+
+        if (activityByHour.length === 0) {
+            labels = ['1시', '2시', '3시'];
+            views = [10, 15, 8];
+            likes = [5, 8, 4];
+        }
+
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Views',
+                        data: views,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false
+                    },
+                    {
+                        label: 'Likes',
+                        data: likes,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+
+</body>
+</html>
+

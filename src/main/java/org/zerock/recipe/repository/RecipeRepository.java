@@ -33,7 +33,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, RecipeSea
             "ORDER BY COUNT(ri) DESC")
     List<Recipe> findRecipesByIngredients(@Param("ingredientNames") List<String> ingredientNames);
 
-    // 로그인한 사용자의 레시피를 필터링하는 메서드 추가
+    // 로그인한 사용자의 레시피를 필터링하는 메서드
     @Query("SELECT r FROM Recipe r " +
             "JOIN RecipeIngredient ri ON r.rid = ri.recipe.rid " +
             "WHERE ri.name IN :ingredientNames AND r.writer = :writer " +
@@ -41,5 +41,13 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long>, RecipeSea
             "HAVING COUNT(ri) > 0 " +
             "ORDER BY COUNT(ri) DESC")
     List<Recipe> findRecipesByIngredientsAndWriter(@Param("ingredientNames") List<String> ingredientNames, @Param("writer") String writer);
+
+    @Query("SELECT HOUR(r.regTime), SUM(r.viewCount), SUM(r.favoriteCount)" +
+            "FROM Recipe r " +
+            "WHERE r.regTime IS NOT NULL " +
+            "GROUP BY HOUR(r.regTime) " +
+            "ORDER BY HOUR(r.regTime)")
+    List<Object[]> findViewCountAndFavoriteCountByHour();
+
 
 }

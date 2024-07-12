@@ -3,6 +3,10 @@ package org.zerock.recipe.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -10,6 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EntityListeners(value = { AuditingEntityListener.class })
 public class Favorite {
 
     @Id
@@ -23,6 +28,10 @@ public class Favorite {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
+
+    @CreatedDate
+    @Column(name = "likeddate", updatable = false)
+    private LocalDateTime likedDate;
 
 
 }

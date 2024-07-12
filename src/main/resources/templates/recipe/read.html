@@ -62,14 +62,9 @@
                         <textarea class="form-control col-sm-5" rows="5" readonly>[[${dto.content}]]</textarea>
                     </div>
 
-                    <div class="input-group mb-3" th:if="${dto.videoUrl != null && dto.fileNames != null && !dto.fileNames.isEmpty()}">
-                        <iframe
-                                id="ytplayer"
-                                type="text/html"
-                                width="720"
-                                height="405"
-                                th:src="${dto.videoUrl}"
-                                allowfullscreen="allowfullscreen">
+                    <div class="input-group mb-3" th:if="${dto.videoUrl != null}">
+                        <iframe th:src="'https://www.youtube.com/embed/' + ${dto.videoId}"
+                                width="560" height="315" style="border: none;" allowfullscreen>
                         </iframe>
                     </div>
 
