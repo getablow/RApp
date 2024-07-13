@@ -42,6 +42,8 @@ public class RecipeController {
     //private final FavoriteService favoriteService; //임시로 해놓음. 지우고 favoriteService는 RecipeService에 전달받아 사용되어야만 한다.
 
 
+
+
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/communityPage")
     public void communityPage(PageRequestDTO pageRequestDTO, Model model){
@@ -57,7 +59,7 @@ public class RecipeController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/personalPage")
+    @GetMapping({"/","/personalPage"})
     public void personalPage(PageRequestDTO pageRequestDTO, Model model, @AuthenticationPrincipal User user){
 
         PageResponseDTO<RecipeListAllDTO> responseDTO = recipeService.listWithAllByWriter(pageRequestDTO, user.getUsername());
