@@ -20,10 +20,10 @@
 </head>
 <body class="align-middle" >
 <div class="container-fluid d-flex justify-content-center" style="height: 100vh">
+    <div class="align-self-center">
+        <img th:src="@{/images/recipeLogo.png}" alt="Recipe" class="img-fluid" style="max-width: 500px;">
+    </div>
     <div class="card align-self-center">
-        <div class="card-header">
-            LOGIN
-        </div>
         <div class="card-body">
             <th:block th:if="${param.logout != null}">
                 <h1>Logout........</h1>
