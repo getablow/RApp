@@ -8,10 +8,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerock.recipe.domain.Member;
 import org.zerock.recipe.domain.MemberRole;
+import org.zerock.recipe.domain.Recipe;
 import org.zerock.recipe.domain.Refrigerator;
 import org.zerock.recipe.dto.MemberJoinDTO;
 import org.zerock.recipe.repository.MemberRepository;
+import org.zerock.recipe.repository.RecipeRepository;
 import org.zerock.recipe.repository.RefrigeratorRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.zerock.recipe.domain.QMember.member;
 
@@ -25,6 +30,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final RefrigeratorRepository refrigeratorRepository;
+    private final RecipeRepository recipeRepository;
 
     @Transactional
     @Override
@@ -62,11 +68,35 @@ public class MemberServiceImpl implements MemberService{
         }
     }
 
-    private Refrigerator createRefrigerator(Member member) {
-        return Refrigerator.builder()
+    @Transactional
+    @Override
+    public void deleteMember(String mid) {
+        Optional<Member> memberOptional = memberRepository.findById(mid);
+        if (memberOptional.isPresent()) {
+            Member member = memberOptional.get();
+
+            List<Recipe> recipes = recipeRepository.findByMember(member);
+            for (Recipe recipe : recipes) {
+                recipe.clearImages();
+                recipe.clearIngredients();
+                recipeRepository.delete(recipe);
+            }
+
+            memberRepository.delete(member);
+            log.info("Deleted member and related Refrigerator: {}", mid);
+        } else {
+            log.warn("Member not found: {}", mid);
+        }
+    }
+
+
+    @Override
+    public Refrigerator createRefrigerator(Member member) {
+        Refrigerator refrigerator = Refrigerator.builder()
                 .member(member)
                 .name(createRefrigeratorName(member.getMid()))
                 .build();
+        return refrigeratorRepository.save(refrigerator);
     }
 
     private String createRefrigeratorName(String memberId) {

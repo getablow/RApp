@@ -22,7 +22,9 @@ public class RecipeIngredient extends BaseEntity{
     @Column(length = 50)
     private String amount;
 
-    @ManyToOne
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_rid")
     private Recipe recipe;
 
     public void changeRecipe(Recipe recipe){

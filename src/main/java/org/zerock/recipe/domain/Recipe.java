@@ -47,6 +47,12 @@ public class Recipe extends BaseEntity{
         this.reveal = reveal;
     }
 
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+
     @OneToMany(mappedBy = "recipe", //Image의 recipe변수. 매핑테이블 생성하지않기위해 지정.
             cascade = {CascadeType.ALL}, //영속성 전이 - All: 상위의 엔티티의 상태변경이 하위에도 적용
             fetch = FetchType.LAZY,
@@ -56,10 +62,8 @@ public class Recipe extends BaseEntity{
     private Set<RecipeImage> imageSet = new HashSet<>();
 
 
-
     //jpaRepository 따로 생성하지 않고 하위엔티티 객체들을 관리하는 addImage와 clearImages 메소드
     public void addImage(String uuid, String fileName){
-
         RecipeImage recipeImage = RecipeImage.builder()
                 .uuid(uuid)
                 .fileName(fileName)
@@ -85,9 +89,7 @@ public class Recipe extends BaseEntity{
     @BatchSize(size = 20)
     private Set<RecipeIngredient> ingredientSet = new HashSet<>();
 
-
-    public void addIngredients(String name, String amount){
-
+    public void addIngredients(String name, String amount) {
         RecipeIngredient recipeIngredient = RecipeIngredient.builder()
                 .name(name)
                 .recipe(this)

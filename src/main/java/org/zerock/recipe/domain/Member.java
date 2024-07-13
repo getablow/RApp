@@ -28,6 +28,9 @@ public class Member extends BaseEntity{
     @Builder.Default
     private Set<MemberRole> roleSet = new HashSet<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipes;
+
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private Refrigerator refrigerator;
 
@@ -58,6 +61,7 @@ public class Member extends BaseEntity{
     public void changeSocial(boolean social) {
         this.social = social;
     }
+
     public void setRefrigerator(Refrigerator refrigerator) {
         this.refrigerator = refrigerator;
         if (refrigerator != null) {

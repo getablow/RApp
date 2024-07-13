@@ -14,9 +14,11 @@ public interface MemberService {
 
     void join(MemberJoinDTO memberJoinDTO) throws MidExistException;
 
+    void deleteMember(String mid);
 
-    /*Refrigerator createRefrigerator(Member member);
-    String createRefrigeratorName(String memberId);*/
+    Refrigerator createRefrigerator(Member member);
+
+
 
 
 

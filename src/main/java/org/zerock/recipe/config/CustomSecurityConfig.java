@@ -23,6 +23,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.zerock.recipe.repository.MemberRepository;
 import org.zerock.recipe.security.CustomUserDetailsService;
 import org.zerock.recipe.security.handler.Custom403Handler;
 import org.zerock.recipe.security.handler.CustomLoginSuccessHandler;
@@ -40,6 +41,7 @@ public class CustomSecurityConfig {
 
     private final DataSource dataSource;
     private final CustomUserDetailsService userDetailsService;
+    private final MemberRepository memberRepository;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -60,7 +62,6 @@ public class CustomSecurityConfig {
 
         http.formLogin(form -> {
             form.loginPage("/member/login");
-            //form.defaultSuccessUrl("/recipe/list");
             form.successHandler(loginSuccessHandler());
         });
 
@@ -126,7 +127,7 @@ public class CustomSecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new CustomSocialLoginSuccessHandler(passwordEncoder());
+        return new CustomSocialLoginSuccessHandler(passwordEncoder(), memberRepository);
     }
 
     @Bean
@@ -135,7 +136,7 @@ public class CustomSecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8081")
+                        .allowedOrigins("http://localhost:8080")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
                         .allowedHeaders("*");
             }

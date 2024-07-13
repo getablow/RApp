@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -82,11 +83,10 @@ public class RecipeController {
 
 
     @PostMapping("/register")
-    public String registerPost(@Valid RecipeDTO recipeDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
+    public String registerPost(@Valid RecipeDTO recipeDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes, Authentication authentication){
 
-        log.info("Recipe registration attempt");
-
-        log.info("Received RecipeDTO: {}", recipeDTO);
+        //log.info("Recipe registration attempt");
+        //log.info("Received RecipeDTO: {}", recipeDTO);
 
         if(bindingResult.hasErrors()) {
             log.warn("Recipe registration failed due to validation errors");
@@ -95,6 +95,16 @@ public class RecipeController {
         }
 
         try {
+            if (authentication != null && authentication.isAuthenticated()){
+                String username = authentication.getName();
+                recipeDTO.setMemberId(username);
+                log.info("Setting memberId: {} for the recipe", username);
+            } else {
+                log.warn("No authenticated user found for recipe registration");
+                redirectAttributes.addFlashAttribute("error", "You must be logged in to register a recipe");
+                return "redirect:/member/login";
+            }
+
             Long rid = recipeService.register(recipeDTO);
             log.info("recipe registered successfully with Id: {}", rid);
             redirectAttributes.addAttribute("rid",rid);
@@ -176,7 +186,7 @@ public class RecipeController {
 
         redirectAttributes.addFlashAttribute("result", "removed");
 
-        return "redirect:/recipe/list";
+        return "redirect:/recipe/personalPage";
 
     }
 

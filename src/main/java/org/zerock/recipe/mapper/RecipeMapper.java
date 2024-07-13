@@ -1,53 +1,20 @@
-package org.zerock.recipe.service;
+package org.zerock.recipe.mapper;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.zerock.recipe.domain.Member;
 import org.zerock.recipe.domain.Recipe;
-import org.zerock.recipe.domain.RecipeIngredient;
-import org.zerock.recipe.dto.*;
+import org.zerock.recipe.dto.MemberDTO;
+import org.zerock.recipe.dto.RecipeDTO;
+import org.zerock.recipe.dto.RecipeIngredientDTO;
+import org.zerock.recipe.repository.MemberRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public interface RecipeService {
 
-    Map<String, Object> favoriteRecipe(java.lang.String username, Long rid);
 
-    int getFavoriteCount(Long rid);
-
-    Long register(RecipeDTO recipeDTO);
-
-    RecipeDTO readOne(String username,Long rid);
-
-    void modify(RecipeDTO recipeDTO);
-
-    void remove(Long rid);
-
-    PageResponseDTO<RecipeDTO> list(PageRequestDTO pageRequestDTO);
-
-    //댓글 숫자까지 처리
-    PageResponseDTO<RecipeListReplyCountDTO> listWithReplyCount(PageRequestDTO pageRequestDTO);
-
-    //게시글의 이미지와 댓글의 숫자까지 처리
-    PageResponseDTO<RecipeListAllDTO> listWithAll(PageRequestDTO pageRequestDTO);
-
-    //로그인한 사용자의 게시물만 처리
-    PageResponseDTO<RecipeListAllDTO> listWithAllByWriter(PageRequestDTO pageRequestDTO, String writer);
-
-    PageResponseDTO<RecipeListAllDTO> listWithReveal(PageRequestDTO pageRequestDTO, Boolean reveal);
-
-    List<RecipeDTO> getTopLikedRecipes();
-    List<RecipeDTO> getTopViewedRecipes();
-
-    List<RecipeDTO> findRecipesByIngredients(String memberId);
-
-    List<ActivityByHourDTO> getViewCountAndFavoriteCountByHour();
-
-    //modelmapper 사용하지않고 메소드만들자
-    /*default Recipe dtoToEntity(RecipeDTO recipeDTO){
+public class RecipeMapper {
+    public static Recipe dtoToEntity(RecipeDTO recipeDTO){
 
         Recipe recipe = Recipe.builder()
                 .rid(recipeDTO.getRid())
@@ -56,8 +23,14 @@ public interface RecipeService {
                 .videoUrl(recipeDTO.getVideoUrl())
                 .writer(recipeDTO.getWriter())
                 .reveal(recipeDTO.isReveal())
-                .member()
                 .build();
+
+        if (recipeDTO.getMemberId() != null) {
+            Member member = Member.builder()
+                    .mid(recipeDTO.getMemberId())
+                    .build();
+            recipe.setMember(member);
+        }
 
         if(recipeDTO.getFileNames() != null){
             recipeDTO.getFileNames().forEach(fileName -> {
@@ -76,7 +49,7 @@ public interface RecipeService {
 
     }
 
-    default RecipeDTO entityToDTO(Recipe recipe){
+    public static RecipeDTO entityToDTO(Recipe recipe){
 
         RecipeDTO recipeDTO = RecipeDTO.builder()
                 .rid(recipe.getRid())
@@ -90,6 +63,7 @@ public interface RecipeService {
                 .viewCount(recipe.getViewCount())
                 .favoriteCount(recipe.getFavoriteCount())
                 .favoriteConfirm(false)
+                .memberId(recipe.getMember() != null ? recipe.getMember().getMid() : null)
                 .build();
 
 
@@ -109,19 +83,17 @@ public interface RecipeService {
                         .build())
                 .collect(Collectors.toList());
 
-        *//*List<RecipeIngredientDTO> ingredientDTOS = new ArrayList<>();
+        /*List<RecipeIngredientDTO> ingredientDTOS = new ArrayList<>();
         for (RecipeIngredient material : recipe.getIngredientSet()) {
             RecipeIngredientDTO ingredientDTO = new RecipeIngredientDTO();
             ingredientDTO.setName(material.getName());
             ingredientDTO.setAmount(material.getAmount());
             ingredientDTOS.add(ingredientDTO);
-        }*//*
+        }*/
 
 
         recipeDTO.setIngredients(ingredientDTOS);
 
         return recipeDTO;
-    }*/
-
-
+    }
 }

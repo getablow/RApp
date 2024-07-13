@@ -12,6 +12,8 @@ import org.zerock.recipe.domain.Member;
 import org.zerock.recipe.domain.Recipe;
 import org.zerock.recipe.domain.RefrigeratorItem;
 import org.zerock.recipe.dto.*;
+import org.zerock.recipe.mapper.RecipeMapper;
+import org.zerock.recipe.repository.MemberRepository;
 import org.zerock.recipe.repository.RecipeRepository;
 import org.zerock.recipe.repository.RefrigeratorItemRepository;
 
@@ -50,7 +52,7 @@ public class RecipeServiceImpl implements RecipeService{
     public Long register(RecipeDTO recipeDTO) {
 
         log.info("Registering recipe. DTO isReveal: {}", recipeDTO.isReveal());
-        Recipe recipe = dtoToEntity(recipeDTO);
+        Recipe recipe = RecipeMapper.dtoToEntity(recipeDTO);
         log.info("Created entity. Entity isReveal: {}", recipe.isReveal());
         Long rid = recipeRepository.save(recipe).getRid();
         log.info("Saved entity. Returned ID: {}", rid);
@@ -69,7 +71,7 @@ public class RecipeServiceImpl implements RecipeService{
 
         Recipe recipe = result.orElseThrow();
 
-        RecipeDTO recipeDTO = entityToDTO(recipe);
+        RecipeDTO recipeDTO = RecipeMapper.entityToDTO(recipe);
 
         recipe.riseViewCount();
         recipeRepository.save(recipe);
@@ -239,7 +241,7 @@ public class RecipeServiceImpl implements RecipeService{
         Pageable pageable = PageRequest.of(0,10);
         List<Recipe> recipes = recipeRepository.findTopByOrderByFavoriteCountDesc(pageable);
         return recipes.stream()
-                .map(this::entityToDTO)
+                .map(RecipeMapper::entityToDTO)
                 .collect(Collectors.toList());
 
     }
@@ -248,7 +250,7 @@ public class RecipeServiceImpl implements RecipeService{
         Pageable pageable = PageRequest.of(0, 10);
         List<Recipe> recipes = recipeRepository.findTopByOrderByViewCount(pageable);
         return recipes.stream()
-                .map(this::entityToDTO)
+                .map(RecipeMapper::entityToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -268,7 +270,7 @@ public class RecipeServiceImpl implements RecipeService{
 
         // 엔티티를 DTO로 변환
         return recipes.stream()
-                .map(this::entityToDTO)
+                .map(RecipeMapper::entityToDTO)
                 .collect(Collectors.toList());
     }
 

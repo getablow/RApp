@@ -30,7 +30,7 @@
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/recipe/personalPage}">MyRecipe</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/recipe/refrigerator}">Refrigerator</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/recipe/communityPage}">Community</a>
-                <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Profile</a>
+                <a class="list-group-item list-group-item-action list-group-item-light p-3" th:href="@{/member/leave}">Profile</a>
                 <a class="list-group-item list-group-item-action list-group-item-light p-3" th:if="${param.logout == null}" th:href="@{/member/login/logout}">Logout</a>
             </div>
             <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="list-group list-group-flush">

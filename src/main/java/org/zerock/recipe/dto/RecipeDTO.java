@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.zerock.recipe.domain.Member;
 import org.zerock.recipe.domain.RecipeIngredient;
 
 import java.time.LocalDate;
@@ -27,7 +28,7 @@ public class RecipeDTO {
     private boolean reveal;
 
     @NotEmpty
-    @Size(min = 3, max = 100)
+    @Size(min = 3, max = 100, message = "Title must be at least 3 characters")
     private String title;
 
     @NotEmpty
@@ -41,6 +42,7 @@ public class RecipeDTO {
 
     private int viewCount;
 
+    private String memberId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate regDate;

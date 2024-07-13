@@ -1,8 +1,6 @@
 package org.zerock.recipe.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -21,7 +19,9 @@ public class RecipeImage implements Comparable<RecipeImage>{
 
     private int ord;
 
-    @ManyToOne
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_rid")
     private Recipe recipe;
 
     @Override

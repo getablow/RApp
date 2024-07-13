@@ -5,14 +5,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.zerock.recipe.dto.MemberJoinDTO;
 import org.zerock.recipe.service.MemberService;
@@ -44,6 +43,11 @@ public class MemberController {
 
     }
 
+    @GetMapping("/leave")
+    public String leaveGET() {
+        return "/member/leave";
+    }
+
 
     @PostMapping("/join")
     public String joinPOST(MemberJoinDTO memberJoinDTO, RedirectAttributes redirectAttributes){
@@ -63,6 +67,8 @@ public class MemberController {
         return "redirect:/member/login"; //회원가입 후 로그인
 
     }
+
+
 
     @GetMapping("/login/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response){
