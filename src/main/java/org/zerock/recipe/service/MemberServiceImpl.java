@@ -18,7 +18,6 @@ import org.zerock.recipe.repository.RefrigeratorRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static org.zerock.recipe.domain.QMember.member;
 
 
 @Log4j2
