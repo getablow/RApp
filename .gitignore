@@ -1,9 +1,7 @@
 HELP.md
-.gradle
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
 *.gradle.kts.lockfile
 gradle.properties
 
@@ -16,8 +14,6 @@ gradle.properties
 .springBeans
 .sts4-cache
 bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
 .idea
@@ -25,8 +21,6 @@ bin/
 *.iml
 *.ipr
 out/
-!**/src/main/**/out/
-!**/src/test/**/out/
 
 ### NetBeans ###
 /nbproject/private/
@@ -41,15 +35,12 @@ out/
 #logs
 *.log
 logs/
-!**/src/main/**/logs/
-!**/src/test/**/logsf
+!logs/specific-log.log
 
 # env set
 *.env
 *.properties
 *.yml
-!**/src/main/**/resources/*.properties
-!**/
 
 # spring boot
 *.jar
