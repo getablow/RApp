@@ -221,13 +221,6 @@ public class RecipeServiceImpl implements RecipeService{
         String keyword = pageRequestDTO.getKeyword();
         Pageable pageable = pageRequestDTO.getPageable("rid");
 
-        /*Page<RecipeListAllDTO> result;
-    if (reveal != null && reveal) {
-        result = recipeRepository.searchWithReveal(types, keyword, true, pageable);
-    } else {
-        result = recipeRepository.searchWithAll(types, keyword, pageable);
-    }*/
-
         Page<RecipeListAllDTO> result = recipeRepository.searchWithReveal(types, keyword, true, pageable);
 
         return PageResponseDTO.<RecipeListAllDTO>withAll()

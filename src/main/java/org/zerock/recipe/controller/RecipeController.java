@@ -130,7 +130,6 @@ public class RecipeController {
 
         model.addAttribute("dto", recipeDTO);
         model.addAttribute("pageRequestDTO", pageRequestDTO);
-
     }
 
 

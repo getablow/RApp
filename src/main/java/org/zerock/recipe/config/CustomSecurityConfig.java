@@ -3,6 +3,7 @@ package org.zerock.recipe.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,9 @@ public class CustomSecurityConfig {
     private final CustomUserDetailsService userDetailsService;
     private final MemberRepository memberRepository;
 
+    @Value("${REMEMBER_ME_KEY}")
+    private String rememberMeKey;
+
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -76,11 +80,14 @@ public class CustomSecurityConfig {
             customizer.deleteCookies("JSESSIONID","remember-me");
         });
 
+        /*http.csrf(csrf -> {
+            csrf.ignoringRequestMatchers("/api/**");
+        });*/
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.rememberMe(httpSecurityRememberMeConfigurer -> {
 
-            httpSecurityRememberMeConfigurer.key("S@mpl3C0mpl3xK3yForY0urPr0j3ct!")
+            httpSecurityRememberMeConfigurer.key(rememberMeKey)
                     .tokenRepository(persistentTokenRepository())
                     .userDetailsService(userDetailsService)
                     .tokenValiditySeconds(60*60*24*30);

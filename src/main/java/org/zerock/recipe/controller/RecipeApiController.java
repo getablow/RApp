@@ -32,7 +32,6 @@ import static org.zerock.recipe.domain.QRecipe.recipe;
 public class RecipeApiController {
 
     private final RecipeService recipeService;
-    private final RefrigeratorItemService refrigeratorItemService;
 
 
 
@@ -47,7 +46,7 @@ public class RecipeApiController {
             //유저정보출력
             log.info("Authenticated user: {}", userDetails.getUsername());
 
-            // 임시로 로그인한 사용자의 냉장고 재료를 이용하여 레시피 추천
+            // 로그인한 사용자의 냉장고 재료를 이용하여 레시피 추천
             List<RecipeDTO> recommendedRecipes = recipeService.findRecipesByIngredients(userDetails.getUsername());
 
             return ResponseEntity.ok(recommendedRecipes);

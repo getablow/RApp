@@ -37,24 +37,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         log.info("loadUserByUsername: " + username);
 
-        /*String[] adminUsernames = System.getenv("ADMIN_USERNAME").split(",");
-        String[] adminPasswords = System.getenv("ADMIN_PASSWORD").split(",");
-
-        for (int i = 0; i < adminUsernames.length; i++) {
-            if (username.equals(adminUsernames[i])) {
-                // 관리자 계정인 경우
-                List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-
-                String encodedPw = passwordEncoder.encode(adminPasswords[]);
-
-                return User.builder()
-                        .username(adminUsernames[i])
-                        .password(passwordEncoder.encdoe(adminPasswords[i]))
-                        .authorities(authorities)
-                        .build();
-            }
-        }*/
-
         Optional<Member> result = memberRepository.getWithRoles(username);
 
         if(result.isEmpty()){

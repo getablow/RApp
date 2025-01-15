@@ -4,6 +4,8 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+*.gradle.kts.lockfile
+gradle.properties
 
 ### STS ###
 .apt_generated
@@ -35,3 +37,31 @@ out/
 
 ### VS Code ###
 .vscode/
+
+#logs
+*.log
+logs/
+!**/src/main/**/logs/
+!**/src/test/**/logsf
+
+# env set
+*.env
+*.properties
+*.yml
+!**/src/main/**/resources/*.properties
+!**/
+
+# spring boot
+*.jar
+*.war
+
+#sec
+secrets/
+keys/
+certs/
+
+#db
+*.db
+*.sqlite
+*.sql
+
